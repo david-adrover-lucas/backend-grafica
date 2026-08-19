@@ -2,13 +2,15 @@ package com.drover.demo.backend.entity;
 
 import java.time.LocalDate;
 
-import jakarta.annotation.Generated;
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-
-public class revendedore {
+import jakarta.persistence.Table;
+@Entity
+@Table(name= "revendedores")
+public class revendedor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -19,9 +21,9 @@ public class revendedore {
     private LocalDate fechaAlta;
     @Column(name="activo", nullable = false, length = 30) 
     private Boolean activo;
-    public revendedore() {
+    public revendedor() {
     }
-    public revendedore(Long id, LocalDate fechaBaja, LocalDate fechaAlta, Boolean activo) {
+    public revendedor(Long id, LocalDate fechaBaja, LocalDate fechaAlta, Boolean activo) {
         this.id = id;
         this.fechaBaja = fechaBaja;
         this.fechaAlta = fechaAlta;
