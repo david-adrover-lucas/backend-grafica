@@ -1,0 +1,2 @@
+ALTER TABLE productos
+  ADD COLUMN categoria VARCHAR(80) NULL;
