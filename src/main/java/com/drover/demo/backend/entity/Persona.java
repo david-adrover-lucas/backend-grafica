@@ -1,12 +1,28 @@
 package com.drover.demo.backend.entity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
+@Entity
+@Table(name= "persona")
 public class Persona {
- 
+
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name="id")
     private Long id;
+    @Column(name="nombre", nullable=false, length=100)
     private String nombre;
+    @Column(name="apellido", nullable=false, length=100)
     private String apellido;
+    @Column(name="telefono", length = 30)
     private String telefono;
+    @Column(name="rol", nullable=false, length=20)
     private String rol;
+    @Column(name = "activo", nullable = false)
     private Boolean activo;
     
     public Persona(Long id, String nombre, String apellido, String telefono, String rol, Boolean activo) {
@@ -16,6 +32,9 @@ public class Persona {
         this.telefono = telefono;
         this.rol = rol;
         this.activo = activo;
+    }
+    public Persona() {
+
     }
     public Long getId() {
         return id;
