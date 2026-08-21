@@ -1,7 +1,7 @@
 package com.drover.demo.backend.entity;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,7 +17,7 @@ public class Presupuesto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    @Column(name = "nro_presupuesto",nullable = false, length = 30)
+    @Column(name = "nro_presupuesto", nullable = false, unique = true, length = 30)
     private String nro_presupuesto;
     @Column(name = "cliente_id")
     private Long cliente_id;
@@ -26,7 +26,7 @@ public class Presupuesto {
     @Column(name = "responsable_id") 
     private Long responsable_id;
     @Column(name = "fecha", nullable = false) 
-    private LocalDate fecha;
+    private LocalDateTime fecha;
     @Column(name = "estado",nullable = false,length = 20) 
     private String estado;
     @Column(name = "monto_total",nullable = false, length = 15) 
@@ -67,10 +67,10 @@ public class Presupuesto {
     public void setResponsable_id(Long responsable_id) {
         this.responsable_id = responsable_id;
     }
-    public LocalDate getFecha() {
+    public LocalDateTime getFecha() {
         return fecha;
     }
-    public void setFecha(LocalDate fecha) {
+    public void setFecha(LocalDateTime fecha) {
         this.fecha = fecha;
     }
     public String getEstado() {
@@ -93,7 +93,7 @@ public class Presupuesto {
     }
     
     public Presupuesto(Long id, String nro_presupuesto, Long cliente_id, Long revendedor_id, Long responsable_id,
-            LocalDate fecha, String estado, BigDecimal monto_total, String observaciones) {
+            LocalDateTime fecha, String estado, BigDecimal monto_total, String observaciones) {
         this.id = id;
         this.nro_presupuesto = nro_presupuesto;
         this.cliente_id = cliente_id;

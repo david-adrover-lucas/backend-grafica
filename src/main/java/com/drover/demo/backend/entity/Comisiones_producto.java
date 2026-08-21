@@ -18,8 +18,8 @@ public class Comisiones_producto {
     private Long id;
     @Column(name="producto_id")       
     private Long producto_id;
-    @Column(name="monto_comison",nullable = false, length = 15)       
-    private BigDecimal monto_comison;
+    @Column(name="monto_comision",nullable = false, length = 15)
+    private BigDecimal monto_comision;
     @Column(name="activo",nullable = false)       
     private Boolean activo;
     public Long getId() {
@@ -35,10 +35,10 @@ public class Comisiones_producto {
         this.producto_id = producto_id;
     }
     public BigDecimal getMonto_comison() {
-        return monto_comison;
+        return monto_comision;
     }
     public void setMonto_comison(BigDecimal monto_comison) {
-        this.monto_comison = monto_comison;
+        this.monto_comision = monto_comison;
     }
     public Boolean getActivo() {
         return activo;

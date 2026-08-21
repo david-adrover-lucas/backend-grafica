@@ -29,7 +29,7 @@ public class Movimiento_stock {
     private String tipo;
     @Column(name = "cantidad", nullable = false,length = 15)
     private BigDecimal cantidad;
-    @Column(name = "", nullable = false,length = 15)    
+    @Column(name = "costo_unitario", nullable = false,length = 15)
     private BigDecimal costo_unitario;
     @Column(name = "costo_total", nullable = false,length = 15)    
     private BigDecimal costo_total;

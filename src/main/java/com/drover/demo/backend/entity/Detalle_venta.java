@@ -32,10 +32,8 @@ public class Detalle_venta {
     private BigDecimal costo_historico;
     @Column(name = "monto_ganancia_historico", nullable = false, length = 15)
     private BigDecimal monto_ganancia_historico;
-    @Column(name = "monto_comision_ganancia_historico", nullable = false, length = 15)
-    private BigDecimal monto_comision_ganancia_historico;
-    @Column(name = "monto_comicion_historico", nullable = false, length = 15)
-    private BigDecimal monto_comicion_historico;
+    @Column(name = "monto_comision_historico", nullable = false, length = 15)
+    private BigDecimal monto_comision_historico;
     @Column(name = "subtotal", nullable = false, length = 15)
     private BigDecimal subtotal;
     public Long getId() {
@@ -93,16 +91,16 @@ public class Detalle_venta {
         this.monto_ganancia_historico = monto_ganancia_historico;
     }
     public BigDecimal getMonto_comision_ganancia_historico() {
-        return monto_comision_ganancia_historico;
+        return monto_comision_historico;
     }
     public void setMonto_comision_ganancia_historico(BigDecimal monto_comision_ganancia_historico) {
-        this.monto_comision_ganancia_historico = monto_comision_ganancia_historico;
+        this.monto_comision_historico = monto_comision_ganancia_historico;
     }
     public BigDecimal getMonto_comicion_historico() {
-        return monto_comicion_historico;
+        return monto_comision_historico;
     }
     public void setMonto_comicion_historico(BigDecimal monto_comicion_historico) {
-        this.monto_comicion_historico = monto_comicion_historico;
+        this.monto_comision_historico = monto_comicion_historico;
     }
     public BigDecimal getSubtotal() {
         return subtotal;
@@ -112,8 +110,7 @@ public class Detalle_venta {
     }
     public Detalle_venta(Long id, Long venta_id, Long producto_id, BigDecimal cantidad, BigDecimal ancho,
             BigDecimal alto, BigDecimal precio_unitario_historico, BigDecimal costo_historico,
-            BigDecimal monto_ganancia_historico, BigDecimal monto_comision_ganancia_historico,
-            BigDecimal monto_comicion_historico, BigDecimal subtotal) {
+            BigDecimal monto_ganancia_historico, BigDecimal monto_comision_historico, BigDecimal subtotal) {
         this.id = id;
         this.venta_id = venta_id;
         this.producto_id = producto_id;
@@ -123,8 +120,7 @@ public class Detalle_venta {
         this.precio_unitario_historico = precio_unitario_historico;
         this.costo_historico = costo_historico;
         this.monto_ganancia_historico = monto_ganancia_historico;
-        this.monto_comision_ganancia_historico = monto_comision_ganancia_historico;
-        this.monto_comicion_historico = monto_comicion_historico;
+        this.monto_comision_historico = monto_comision_historico;
         this.subtotal = subtotal;
     }
     public Detalle_venta() {

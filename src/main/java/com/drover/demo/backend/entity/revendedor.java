@@ -4,22 +4,19 @@ import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 @Entity
 @Table(name= "revendedores")
 public class Revendedor {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    @Column(name="fecha_baja", length = 20)
+    @Column(name="fecha_baja")
     private LocalDate fechaBaja;
-    @Column(name="fecha_alta", nullable = false, length = 20)
+    @Column(name="fecha_alta", nullable = false)
     private LocalDate fechaAlta;
-    @Column(name="activo", nullable = false, length = 30) 
+    @Column(name="activo", nullable = false)
     private Boolean activo;
     public Revendedor() {
     }

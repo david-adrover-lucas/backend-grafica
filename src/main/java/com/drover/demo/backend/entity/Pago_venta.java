@@ -10,7 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 @Entity
-@Table(name = "Pago_venta")
+@Table(name = "pagos_venta")
 public class Pago_venta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,8 +23,8 @@ public class Pago_venta {
     private BigDecimal monto;
     @Column(name = "medio_pago", nullable = false, length = 50)
     private String medio_pago;
-    @Column(name = "observacion")
-    private String observacion;
+    @Column(name = "observaciones")
+    private String observaciones;
     public Long getId() {
         return id;
     }
@@ -56,19 +56,19 @@ public class Pago_venta {
         this.medio_pago = medio_pago;
     }
     public String getObservacion() {
-        return observacion;
+        return observaciones;
     }
     public void setObservacion(String observacion) {
-        this.observacion = observacion;
+        this.observaciones = observacion;
     }
     public Pago_venta(Long id, Long venta_id, LocalDateTime fecha, BigDecimal monto, String medio_pago,
-            String observacion) {
+            String observaciones) {
         this.id = id;
         this.venta_id = venta_id;
         this.fecha = fecha;
         this.monto = monto;
         this.medio_pago = medio_pago;
-        this.observacion = observacion;
+        this.observaciones = observaciones;
     }
     public Pago_venta() {
     }

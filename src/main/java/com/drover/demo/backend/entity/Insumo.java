@@ -23,7 +23,7 @@ public class Insumo {
     private String unidad;
     @Column(name = "costo_unitario", nullable = false, length = 15)
     private BigDecimal costo_unitario;
-    @Column(name = "Stock_actual", nullable = false, length = 15)
+    @Column(name = "stock_actual", nullable = false, length = 15)
     private BigDecimal stock_actual;
     @Column(name="stock_minimo", nullable = false,length = 15)
     private BigDecimal stock_minimo;

@@ -14,8 +14,8 @@ public class Trabajos_tercerizado {
     @GeneratedValue( strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    @Column(name = "provedor_id")
-    private Long provedor_id;
+    @Column(name = "proveedor_id")
+    private Long proveedor_id;
     @Column(name = "nombre",nullable = false, length = 150)
     private String nombre;
     @Column(name = "unidad_calculo", nullable = false, length = 20)
@@ -26,7 +26,7 @@ public class Trabajos_tercerizado {
     }
     public Trabajos_tercerizado(Long id, Long provedor_id, String nombre, String unidad_calculo, Boolean activo) {
         this.id = id;
-        this.provedor_id = provedor_id;
+        this.proveedor_id = provedor_id;
         this.nombre = nombre;
         this.unidad_calculo = unidad_calculo;
         this.activo = activo;
@@ -38,10 +38,10 @@ public class Trabajos_tercerizado {
         this.id = id;
     }
     public Long getProvedor_id() {
-        return provedor_id;
+        return proveedor_id;
     }
     public void setProvedor_id(Long provedor_id) {
-        this.provedor_id = provedor_id;
+        this.proveedor_id = provedor_id;
     }
     public String getNombre() {
         return nombre;

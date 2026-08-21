@@ -20,8 +20,8 @@ public class Trabajos_tercerizados_venta {
     private Long venta_id;
     @Column(name = "detalle_venta_id")
     private Long detalle_venta_id;
-    @Column(name = "trabajo_tecerizado_id")
-    private Long trabajo_tecerizado_id;
+    @Column(name = "trabajo_tercerizado_id")
+    private Long trabajo_tercerizado_id;
     @Column(name ="proveedor_id" )
     private Long  proveedor_id;
     @Column(name ="cantidad",nullable = false,length = 15 )    
@@ -55,10 +55,10 @@ public class Trabajos_tercerizados_venta {
         this.detalle_venta_id = detalle_venta_id;
     }
     public Long getTrabajo_tecerizado_id() {
-        return trabajo_tecerizado_id;
+        return trabajo_tercerizado_id;
     }
     public void setTrabajo_tecerizado_id(Long trabajo_tecerizado_id) {
-        this.trabajo_tecerizado_id = trabajo_tecerizado_id;
+        this.trabajo_tercerizado_id = trabajo_tecerizado_id;
     }
     public Long getProveedor_id() {
         return proveedor_id;
@@ -109,7 +109,7 @@ public class Trabajos_tercerizados_venta {
         this.id = id;
         this.venta_id = venta_id;
         this.detalle_venta_id = detalle_venta_id;
-        this.trabajo_tecerizado_id = trabajo_tecerizado_id;
+        this.trabajo_tercerizado_id = trabajo_tecerizado_id;
         this.proveedor_id = proveedor_id;
         this.cantidad = cantidad;
         this.precio_unitario_historico = precio_unitario_historico;

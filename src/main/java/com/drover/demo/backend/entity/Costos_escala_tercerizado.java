@@ -10,7 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "costos_escala_tercerizad")
+@Table(name = "costos_escala_tercerizado")
 public class Costos_escala_tercerizado {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,7 +20,7 @@ public class Costos_escala_tercerizado {
     private Long trabajo_tercerizado_id;
     @Column(name = "cantidad_desde",nullable = false,length = 15)
     private BigDecimal cantidad_desde;
-    @Column(name = "cantidad_hasta",nullable = false,length = 15)
+    @Column(name = "cantidad_hasta", length = 15)
     private BigDecimal cantidad_hasta;
     @Column(name = "precio_unitario",nullable = false,length = 15)
     private BigDecimal precio_unitario;

@@ -5,24 +5,21 @@ import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 @Entity
-@Table(name = "empleado")
+@Table(name = "empleados")
 public class Empleado {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    @Column(name="sueldo_mensual", length = 20)
+    @Column(name="sueldo_mensual", nullable = false, precision = 14, scale = 2)
     private BigDecimal sueldoMensual;
-    @Column(name="fecha_baja", length = 20)
+    @Column(name="fecha_baja")
     private LocalDate fechaBaja;
-    @Column(name="fecha_alta", nullable = false, length = 20)
+    @Column(name="fecha_alta", nullable = false)
     private LocalDate fechaAlta;
-    @Column(name="activo", nullable = false, length = 30) 
+    @Column(name="activo", nullable = false)
     private Boolean activo;
 
     public Empleado() {

@@ -9,7 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name="proveedor")
+@Table(name = "proveedores")
 public class Proveedor {
     
     @Id
@@ -27,11 +27,11 @@ public class Proveedor {
     @Column(name = "tipo", nullable = false, length =20)
     private String tipo;
     @Column(name = "activo",nullable = false)
-    private String activo;
+    private Boolean activo;
     public Proveedor() {
     }
     public Proveedor(Long id, String nombre, String telefono, String email, String red_social, String tipo,
-         String activo) {
+         Boolean activo) {
         this.id = id;
         this.nombre = nombre;
         this.telefono = telefono;
@@ -76,10 +76,10 @@ public class Proveedor {
     public void setTipo(String tipo) {
         this.tipo = tipo;
     }
-    public String getActivo() {
+    public Boolean getActivo() {
         return activo;
     }
-    public void setActivo(String activo) {
+    public void setActivo(Boolean activo) {
         this.activo = activo;
     }
 
