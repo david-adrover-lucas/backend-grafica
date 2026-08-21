@@ -10,7 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 @Entity
 @Table(name= "revendedores")
-public class revendedor {
+public class Revendedor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -21,9 +21,9 @@ public class revendedor {
     private LocalDate fechaAlta;
     @Column(name="activo", nullable = false, length = 30) 
     private Boolean activo;
-    public revendedor() {
+    public Revendedor() {
     }
-    public revendedor(Long id, LocalDate fechaBaja, LocalDate fechaAlta, Boolean activo) {
+    public Revendedor(Long id, LocalDate fechaBaja, LocalDate fechaAlta, Boolean activo) {
         this.id = id;
         this.fechaBaja = fechaBaja;
         this.fechaAlta = fechaAlta;

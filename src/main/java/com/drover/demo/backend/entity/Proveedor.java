@@ -28,7 +28,6 @@ public class Proveedor {
     private String tipo;
     @Column(name = "activo",nullable = false)
     private String activo;
-
     public Proveedor() {
     }
     public Proveedor(Long id, String nombre, String telefono, String email, String red_social, String tipo,
