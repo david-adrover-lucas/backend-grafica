@@ -8,13 +8,17 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "clientes")
 public class Cliente {
+   
     @Id
     @Column(name="id")
     private Long id;
+   
     @Column(name = "numero", nullable = false, length = 50)
     private String numero;
+   
     @Column(name = "departamento", nullable = false, length = 100)
     private String departamento;
+   
     public Cliente() {
     }
     public Cliente(Long id, String numero, String departamento) {
