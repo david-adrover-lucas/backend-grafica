@@ -45,8 +45,7 @@ public class PersonaService {
             throw new IllegalArgumentException("El número de teléfono ya está registrado por otro usuario.");
         }
         
-        // CORRECCIÓN CLAVE: Usamos saveAndFlush para persistir al padre inmediatamente en la BD
-        // e impedir que Hibernate ignore la inserción o se confunda con los contextos.
+
         Persona personaGuardada = personaRepository.saveAndFlush(personaLimpia);
         Long idGenerado = personaGuardada.getId();
         

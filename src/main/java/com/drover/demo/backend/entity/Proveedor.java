@@ -20,7 +20,7 @@ public class Proveedor {
     private String nombre;
     @Column(name = "telefono",length = 30)
     private String telefono;
-    @Column(name = "email",length = 150)
+    @Column(name = "email",length = 150,unique = true)
     private String email;
     @Column(name="red_social", length = 255)
     private String red_social;
