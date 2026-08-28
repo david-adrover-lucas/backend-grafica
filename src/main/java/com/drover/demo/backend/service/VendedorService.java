@@ -1,12 +1,16 @@
 package com.drover.demo.backend.service;
 
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
+
 
 import org.springframework.stereotype.Service;
 
 import com.drover.demo.backend.entity.Vendedor;
+import com.drover.demo.backend.repository.PersonaRepository;
 import com.drover.demo.backend.repository.VendedorRepository;
+
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class VendedorService {
@@ -18,18 +22,15 @@ public class VendedorService {
     }
 
     public List<Vendedor> listar() {
-        return vendedorRepository.findAll();
+        return vendedorRepository.findAll();    
     }
 
-    public Optional<Vendedor> buscarPorId(Long id) {
-        return vendedorRepository.findById(id);
+    public List<Vendedor> listarFechaAlta(LocalDate alta) {
+        if (alta == null) {
+            throw new IllegalArgumentException("La fecha de alta es obligatoria para realizar la consulta.");
+        }
+        return vendedorRepository.findByFechaAlta(alta);
     }
-
-    public Vendedor guardar(Vendedor vendedor) {
-        return vendedorRepository.save(vendedor);
-    }
-
-    public void eliminarPorId(Long id) {
-        vendedorRepository.deleteById(id);
-    }
+   
 }
+

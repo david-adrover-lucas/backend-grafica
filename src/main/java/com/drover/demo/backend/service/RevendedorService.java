@@ -1,5 +1,6 @@
 package com.drover.demo.backend.service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,17 +20,12 @@ public class RevendedorService {
 
     public List<Revendedor> listar() {
         return revendedorRepository.findAll();
-    }
 
-    public Optional<Revendedor> buscarPorId(Long id) {
-        return revendedorRepository.findById(id);
-    }
-
-    public Revendedor guardar(Revendedor revendedor) {
-        return revendedorRepository.save(revendedor);
-    }
-
-    public void eliminarPorId(Long id) {
-        revendedorRepository.deleteById(id);
-    }
+    }  
+    public List<Revendedor> listarPorFecha(LocalDate alta){
+        if (alta == null) {
+           throw new IllegalArgumentException("La fecha de alta es obligatoria para realizar la consulta.");
+        }
+        return revendedorRepository.findByFechaAlta(alta);
+    }    
 }

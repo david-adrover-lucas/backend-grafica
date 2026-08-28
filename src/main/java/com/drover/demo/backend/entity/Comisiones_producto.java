@@ -18,6 +18,10 @@ public class Comisiones_producto {
     private Long id;
     @Column(name="producto_id")       
     private Long producto_id;
+    @Column(name="m2_desde", nullable = false, length = 15)
+    private BigDecimal m2_desde;
+    @Column(name="m2_hasta", length = 15)
+    private BigDecimal m2_hasta;
     @Column(name="monto_comision",nullable = false, length = 15)
     private BigDecimal monto_comision;
     @Column(name="activo",nullable = false)       
@@ -34,11 +38,23 @@ public class Comisiones_producto {
     public void setProducto_id(Long producto_id) {
         this.producto_id = producto_id;
     }
-    public BigDecimal getMonto_comison() {
+    public BigDecimal getM2_desde() {
+        return m2_desde;
+    }
+    public void setM2_desde(BigDecimal m2_desde) {
+        this.m2_desde = m2_desde;
+    }
+    public BigDecimal getM2_hasta() {
+        return m2_hasta;
+    }
+    public void setM2_hasta(BigDecimal m2_hasta) {
+        this.m2_hasta = m2_hasta;
+    }
+    public BigDecimal getMonto_comision() {
         return monto_comision;
     }
-    public void setMonto_comison(BigDecimal monto_comison) {
-        this.monto_comision = monto_comison;
+    public void setMonto_comision(BigDecimal monto_comision) {
+        this.monto_comision = monto_comision;
     }
     public Boolean getActivo() {
         return activo;

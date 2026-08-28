@@ -1,5 +1,6 @@
 package com.drover.demo.backend.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,19 +18,10 @@ public class Costos_escala_tercerizadoService {
         this.costosEscalaTercerizadoRepository = costosEscalaTercerizadoRepository;
     }
 
-    public List<Costos_escala_tercerizado> listar() {
-        return costosEscalaTercerizadoRepository.findAll();
-    }
-
-    public Optional<Costos_escala_tercerizado> buscarPorId(Long id) {
-        return costosEscalaTercerizadoRepository.findById(id);
-    }
-
-    public Costos_escala_tercerizado guardar(Costos_escala_tercerizado costosEscalaTercerizado) {
-        return costosEscalaTercerizadoRepository.save(costosEscalaTercerizado);
-    }
-
-    public void eliminarPorId(Long id) {
-        costosEscalaTercerizadoRepository.deleteById(id);
-    }
+    public List<Costos_escala_tercerizado> listar() {}
+    public Optional<Costos_escala_tercerizado> buscarPorId(Long id) { }
+    public Costos_escala_tercerizado guardar(Costos_escala_tercerizado costosEscalaTercerizado) {}
+    public void eliminarPorId(Long id) {}
+     
+    private BigDecimal calcularPrecioUnitario(){}
 }

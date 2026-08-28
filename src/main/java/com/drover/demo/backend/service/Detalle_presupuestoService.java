@@ -1,5 +1,6 @@
 package com.drover.demo.backend.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,19 +18,12 @@ public class Detalle_presupuestoService {
         this.detallePresupuestoRepository = detallePresupuestoRepository;
     }
 
-    public List<Detalle_presupuesto> listar() {
-        return detallePresupuestoRepository.findAll();
-    }
+    public List<Detalle_presupuesto> listar() {}
+    public Optional<Detalle_presupuesto> buscarPorId(Long id) {}
+    public Detalle_presupuesto guardar(Detalle_presupuesto detallePresupuesto) { }
+    public void eliminarPorId(Long id) {}
 
-    public Optional<Detalle_presupuesto> buscarPorId(Long id) {
-        return detallePresupuestoRepository.findById(id);
-    }
-
-    public Detalle_presupuesto guardar(Detalle_presupuesto detallePresupuesto) {
-        return detallePresupuestoRepository.save(detallePresupuesto);
-    }
-
-    public void eliminarPorId(Long id) {
-        detallePresupuestoRepository.deleteById(id);
-    }
+    private BigDecimal calcularCosto(){}
+    private BigDecimal calcularPrecioUnitario(){}
+    
 }

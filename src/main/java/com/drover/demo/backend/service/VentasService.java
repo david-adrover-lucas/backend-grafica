@@ -1,5 +1,6 @@
 package com.drover.demo.backend.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,19 +18,13 @@ public class VentasService {
         this.ventasRepository = ventasRepository;
     }
 
-    public List<Ventas> listar() {
-        return ventasRepository.findAll();
-    }
+    public List<Ventas> listar() { }
+    public List<Ventas> listarEstado(){}
+    public List<Ventas> listarEstadoPago(){}
+    public List<Ventas> listarPorFecha(){}
+    public Optional<Ventas> buscarPorId(Long id) {}
+    public Ventas guardar(Ventas ventas) { }
+    public void eliminarPorId(Long id) {}
 
-    public Optional<Ventas> buscarPorId(Long id) {
-        return ventasRepository.findById(id);
-    }
-
-    public Ventas guardar(Ventas ventas) {
-        return ventasRepository.save(ventas);
-    }
-
-    public void eliminarPorId(Long id) {
-        ventasRepository.deleteById(id);
-    }
+    private BigDecimal calcularMontoTotal(){}
 }

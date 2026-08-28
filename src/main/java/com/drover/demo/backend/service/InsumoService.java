@@ -1,5 +1,6 @@
 package com.drover.demo.backend.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,20 +17,12 @@ public class InsumoService {
     public InsumoService(InsumoRepository insumoRepository) {
         this.insumoRepository = insumoRepository;
     }
+    public List<Insumo> listar() {}
+    public Boolean  buscarPorId(Long id) {}
+    public Insumo guardar(Insumo insumo) {}
+    public List<Insumo> listarPorUnidad(){}
+    public void eliminarPorId(Long id){}
 
-    public List<Insumo> listar() {
-        return insumoRepository.findAll();
-    }
-
-    public Optional<Insumo> buscarPorId(Long id) {
-        return insumoRepository.findById(id);
-    }
-
-    public Insumo guardar(Insumo insumo) {
-        return insumoRepository.save(insumo);
-    }
-
-    public void eliminarPorId(Long id) {
-        insumoRepository.deleteById(id);
-    }
+    private Boolean validarCosto(BigDecimal costo){}
+    private Boolean validarStock(BigDecimal stock){}
 }

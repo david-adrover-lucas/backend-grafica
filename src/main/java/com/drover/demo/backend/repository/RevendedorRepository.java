@@ -13,5 +13,5 @@ public interface RevendedorRepository extends JpaRepository<Revendedor, Long> {
 
     List<Revendedor> findByActivo(Boolean activo);
 
-    List<Revendedor> findByFechaAltaBetween(LocalDate desde, LocalDate hasta);
+    List<Revendedor> findByFechaAlta(LocalDate fechaAlta);
 }

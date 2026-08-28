@@ -17,19 +17,9 @@ public class Producto_insumoService {
         this.productoInsumoRepository = productoInsumoRepository;
     }
 
-    public List<Producto_insumo> listar() {
-        return productoInsumoRepository.findAll();
-    }
-
-    public Optional<Producto_insumo> buscarPorId(Long id) {
-        return productoInsumoRepository.findById(id);
-    }
-
-    public Producto_insumo guardar(Producto_insumo productoInsumo) {
-        return productoInsumoRepository.save(productoInsumo);
-    }
-
-    public void eliminarPorId(Long id) {
-        productoInsumoRepository.deleteById(id);
-    }
+    public List<Producto_insumo> listar() {}
+    public Optional<Producto_insumo> buscarPorId(Long id) {}
+    public Producto_insumo guardar(Producto_insumo productoInsumo) {}
+    public void eliminarPorId(Long id) {}
+    
 }

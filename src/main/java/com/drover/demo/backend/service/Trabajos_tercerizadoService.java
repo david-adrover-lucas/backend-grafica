@@ -17,19 +17,10 @@ public class Trabajos_tercerizadoService {
         this.trabajosTercerizadoRepository = trabajosTercerizadoRepository;
     }
 
-    public List<Trabajos_tercerizado> listar() {
-        return trabajosTercerizadoRepository.findAll();
-    }
+    public List<Trabajos_tercerizado> listar() {}
+    public Optional<Trabajos_tercerizado> buscarPorId(Long id) {}
+    public Trabajos_tercerizado guardar(Trabajos_tercerizado trabajosTercerizado) {}
+    public void eliminarPorId(Long id) {}
 
-    public Optional<Trabajos_tercerizado> buscarPorId(Long id) {
-        return trabajosTercerizadoRepository.findById(id);
-    }
-
-    public Trabajos_tercerizado guardar(Trabajos_tercerizado trabajosTercerizado) {
-        return trabajosTercerizadoRepository.save(trabajosTercerizado);
-    }
-
-    public void eliminarPorId(Long id) {
-        trabajosTercerizadoRepository.deleteById(id);
-    }
+    
 }

@@ -4,53 +4,35 @@ import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+
+import jakarta.persistence.*;
+
 @Entity
-@Table(name ="vendedores")
-public class Vendedor {
-    @Id
-    @Column(name = "id")
-    private Long id;
-    @Column(name="fecha_baja")
-    private LocalDate fechaBaja;
-    @Column(name="fecha_alta", nullable = false)
+@Table(name = "vendedores")
+@PrimaryKeyJoinColumn(name = "id") 
+public class Vendedor extends Persona {
+
+    @Column(name = "fecha_alta", nullable = false)
     private LocalDate fechaAlta;
-    @Column(name="activo", nullable = false) 
-    private Boolean activo;
-    
+
+    @Column(name = "fecha_baja") 
+    private LocalDate fechaBaja;
+
+    @Column(nullable = false)
+    private Boolean activo = true;
+
     public Vendedor() {
-    }
-    public Vendedor(Long id, LocalDate fechaBaja, LocalDate fechaAlta, Boolean activo) {
-        this.id = id;
-   
-        this.fechaBaja = fechaBaja;
-        this.fechaAlta = fechaAlta;
-        this.activo = activo;
-    }
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
+        super();
     }
 
-    public LocalDate getFechaBaja() {
-        return fechaBaja;
-    }
-    public void setFechaBaja(LocalDate fechaBaja) {
-        this.fechaBaja = fechaBaja;
-    }
-    public LocalDate getFechaAlta() {
-        return fechaAlta;
-    }
-    public void setFechaAlta(LocalDate fechaAlta) {
-        this.fechaAlta = fechaAlta;
-    }
-    public Boolean getActivo() {
-        return activo;
-    }
-    public void setActivo(Boolean activo) {
-        this.activo = activo;
-    }
+    
+    public LocalDate getFechaAlta() { return fechaAlta; }
+    public void setFechaAlta(LocalDate fechaAlta) { this.fechaAlta = fechaAlta; }
+    public LocalDate getFechaBaja() { return fechaBaja; }
+    public void setFechaBaja(LocalDate fechaBaja) { this.fechaBaja = fechaBaja; }
+    @Override
+    public Boolean getActivo() { return activo; }
+    @Override
+    public void setActivo(Boolean activo) { this.activo = activo; }
 }

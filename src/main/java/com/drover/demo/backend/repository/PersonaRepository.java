@@ -10,12 +10,13 @@ import com.drover.demo.backend.entity.Persona;
 
 @Repository
 public interface PersonaRepository extends JpaRepository<Persona, Long> {
-   
     List<Persona> findByNombre(String nombre);
     List<Persona> findByApellido(String apellido);
     List<Persona> findByRol(String rol);
     List<Persona> findByActivo(Boolean activo);
-    Optional<Persona>findByTelefono(String telefono); 
+    Optional<Persona> findById(Long id);
+    Optional<Persona> findByTelefono(String telefono);
+
  
 
 }

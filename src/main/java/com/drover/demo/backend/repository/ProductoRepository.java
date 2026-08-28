@@ -11,6 +11,6 @@ import com.drover.demo.backend.entity.Producto;
 public interface ProductoRepository extends JpaRepository<Producto, Long> {
 
     List<Producto> findByActivo(Boolean activo);
-
-    List<Producto> findByNombreContainingIgnoreCase(String nombre);
+    List<Producto> findByNombre(String nombre);
+    List<Producto> findByUnidad_venta(String unidad_venta);
 }

@@ -14,8 +14,7 @@ public interface InsumoRepository extends JpaRepository<Insumo, Long> {
 
     @Query("select i from Insumo i where i.proveedor_id = :proveedorId")
     List<Insumo> findByProveedorId(@Param("proveedorId") Long proveedorId);
-
     List<Insumo> findByActivo(Boolean activo);
-
     List<Insumo> findByNombreContainingIgnoreCase(String nombre);
+    List<Insumo> findByUnidad(String unidad);
 }

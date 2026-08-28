@@ -1,5 +1,6 @@
 package com.drover.demo.backend.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,19 +19,14 @@ public class Trabajos_tercerizados_ventaService {
         this.trabajosTercerizadosVentaRepository = trabajosTercerizadosVentaRepository;
     }
 
-    public List<Trabajos_tercerizados_venta> listar() {
-        return trabajosTercerizadosVentaRepository.findAll();
-    }
+    public List<Trabajos_tercerizados_venta> listar() {}
+    public List<Trabajos_tercerizados_venta>listarTipo(){}
+    public List<Trabajos_tercerizados_venta> listarFechaEnvio(){}
+    public Optional<Trabajos_tercerizados_venta> buscarPorId(Long id) {}
+    public Trabajos_tercerizados_venta guardar(Trabajos_tercerizados_venta trabajosTercerizadosVenta) {}
+    public void eliminarPorId(Long id) {}
 
-    public Optional<Trabajos_tercerizados_venta> buscarPorId(Long id) {
-        return trabajosTercerizadosVentaRepository.findById(id);
-    }
+    private BigDecimal calcularCostoTotal(){}
+    private BigDecimal calcularCostoUnitario(){}
 
-    public Trabajos_tercerizados_venta guardar(Trabajos_tercerizados_venta trabajosTercerizadosVenta) {
-        return trabajosTercerizadosVentaRepository.save(trabajosTercerizadosVenta);
-    }
-
-    public void eliminarPorId(Long id) {
-        trabajosTercerizadosVentaRepository.deleteById(id);
-    }
 }

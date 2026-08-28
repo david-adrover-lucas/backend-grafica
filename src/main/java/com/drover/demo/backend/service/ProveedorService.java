@@ -17,19 +17,12 @@ public class ProveedorService {
         this.proveedorRepository = proveedorRepository;
     }
 
-    public List<Proveedor> listar() {
-        return proveedorRepository.findAll();
-    }
+    public List<Proveedor> listar() {}
+    public Boolean buscarPorId(Long id) {}
+    public Proveedor guardar(Proveedor proveedor) {}
+    public void eliminarPorId(Long id) {}
+    public Proveedor buscarPorTelefon(){}
+    public List<Proveedor> buscarPorActivo(){}
+    public List<Proveedor> buscarPorTipo(){}
 
-    public Optional<Proveedor> buscarPorId(Long id) {
-        return proveedorRepository.findById(id);
-    }
-
-    public Proveedor guardar(Proveedor proveedor) {
-        return proveedorRepository.save(proveedor);
-    }
-
-    public void eliminarPorId(Long id) {
-        proveedorRepository.deleteById(id);
-    }
 }

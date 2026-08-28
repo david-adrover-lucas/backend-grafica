@@ -21,6 +21,7 @@ public class Producto_insumo {
     private Long producto_id;
     @Column(name="insumo_id")
     private Long  insumo_id;
+    
     @Column(name="cantidad")
     private BigDecimal cantidad;
     public Long getId() {

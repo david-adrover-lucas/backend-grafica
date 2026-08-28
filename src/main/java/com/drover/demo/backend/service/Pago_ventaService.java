@@ -17,19 +17,10 @@ public class Pago_ventaService {
         this.pagoVentaRepository = pagoVentaRepository;
     }
 
-    public List<Pago_venta> listar() {
-        return pagoVentaRepository.findAll();
-    }
+    public List<Pago_venta> listar() {}
+    public Optional<Pago_venta> buscarPorId(Long id) {}
+    public Pago_venta guardar(Pago_venta pagoVenta) {}
+    public void eliminarPorId(Long id) { }
 
-    public Optional<Pago_venta> buscarPorId(Long id) {
-        return pagoVentaRepository.findById(id);
-    }
-
-    public Pago_venta guardar(Pago_venta pagoVenta) {
-        return pagoVentaRepository.save(pagoVenta);
-    }
-
-    public void eliminarPorId(Long id) {
-        pagoVentaRepository.deleteById(id);
-    }
+    
 }

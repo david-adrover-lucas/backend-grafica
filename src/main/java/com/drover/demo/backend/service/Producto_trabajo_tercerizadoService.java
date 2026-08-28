@@ -18,19 +18,10 @@ public class Producto_trabajo_tercerizadoService {
         this.productoTrabajoTercerizadoRepository = productoTrabajoTercerizadoRepository;
     }
 
-    public List<Producto_trabajo_tercerizado> listar() {
-        return productoTrabajoTercerizadoRepository.findAll();
-    }
+    public List<Producto_trabajo_tercerizado> listar() { }
+    public Optional<Producto_trabajo_tercerizado> buscarPorId(Long id){ }
+    public Producto_trabajo_tercerizado guardar(Producto_trabajo_tercerizado productoTrabajoTercerizado) {}
+    public void eliminarPorId(Long id) {}
 
-    public Optional<Producto_trabajo_tercerizado> buscarPorId(Long id) {
-        return productoTrabajoTercerizadoRepository.findById(id);
-    }
-
-    public Producto_trabajo_tercerizado guardar(Producto_trabajo_tercerizado productoTrabajoTercerizado) {
-        return productoTrabajoTercerizadoRepository.save(productoTrabajoTercerizado);
-    }
-
-    public void eliminarPorId(Long id) {
-        productoTrabajoTercerizadoRepository.deleteById(id);
-    }
+    
 }

@@ -1,5 +1,6 @@
 package com.drover.demo.backend.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,19 +18,11 @@ public class Comisiones_productoService {
         this.comisionesProductoRepository = comisionesProductoRepository;
     }
 
-    public List<Comisiones_producto> listar() {
-        return comisionesProductoRepository.findAll();
-    }
+    public List<Comisiones_producto> listar() {}
+    public Optional<Comisiones_producto> buscarPorId(Long id) {}
+    public Comisiones_producto guardar(Comisiones_producto comisionesProducto) {}
+    public void eliminarPorId(Long id) {}
 
-    public Optional<Comisiones_producto> buscarPorId(Long id) {
-        return comisionesProductoRepository.findById(id);
-    }
+    private BigDecimal calcularComision(){}
 
-    public Comisiones_producto guardar(Comisiones_producto comisionesProducto) {
-        return comisionesProductoRepository.save(comisionesProducto);
-    }
-
-    public void eliminarPorId(Long id) {
-        comisionesProductoRepository.deleteById(id);
-    }
 }

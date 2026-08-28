@@ -10,8 +10,7 @@ import com.drover.demo.backend.entity.Vendedor;
 
 @Repository
 public interface VendedorRepository extends JpaRepository<Vendedor, Long> {
-
-    List<Vendedor> findByActivo(Boolean activo);
-
-    List<Vendedor> findByFechaAltaBetween(LocalDate desde, LocalDate hasta);
+    List<Vendedor> findByFechaAlta(LocalDate fechaAlta);
+    
+    List<Vendedor> findByFechaBaja(LocalDate fechaBaja);
 }
