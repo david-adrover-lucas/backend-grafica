@@ -9,51 +9,56 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+
+import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "producto_trabajo_tercerizado")
 public class ProductoTrabajoTercerizado {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    @Column(name = "producto_id")
-    private Long producto_id;
-    @Column(name = "trabajo_tercerizado_id")
-    private Long trabajo_tercerizado_id;
-    @Column(name = "cantidad_requerida",nullable = false,length = 15)
-    private BigDecimal cantidad_requerida;
-    public ProductoTrabajoTercerizado() {
-    }
-    public ProductoTrabajoTercerizado(Long id, Long producto_id, Long trabajo_tercerizado_id,
-            BigDecimal cantidad_requerida) {
+
+    // CORRECCIÓN 1: Relación real con la cabecera del Producto padre (FK a productos.id)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "producto_id", nullable = false)
+    @JsonIgnore // Evita bucles infinitos en el JSON al serializar la relación bidireccional
+    private Producto producto;
+
+    // CORRECCIÓN 2: Relación real con el servicio externo asociado (FK a trabajos_tercerizados.id)
+    @ManyToOne(fetch = FetchType.EAGER) // Trae los datos base del servicio de inmediato al consultar
+    @JoinColumn(name = "trabajo_tercerizado_id", nullable = false)
+    private TrabajosTercerizado trabajoTercerizado; // Cambiado de Long a la clase Entity
+
+    // CORRECCIÓN DECIMAL: Mapeo numérico industrial exacto (DECIMAL 14,4 según tu PDF)
+    @Column(name = "cantidad_requerida", nullable = false, precision = 14, scale = 4)
+    private BigDecimal cantidadRequerida; // Cambiado a camelCase
+
+    // Constructor vacío obligatorio para JPA
+    public ProductoTrabajoTercerizado() {}
+
+    // Constructor completo actualizado con objetos
+    public ProductoTrabajoTercerizado(Long id, Producto producto, TrabajosTercerizado trabajoTercerizado,
+                                      BigDecimal cantidadRequerida) {
         this.id = id;
-        this.producto_id = producto_id;
-        this.trabajo_tercerizado_id = trabajo_tercerizado_id;
-        this.cantidad_requerida = cantidad_requerida;
+        this.producto = producto;
+        this.trabajoTercerizado = trabajoTercerizado;
+        this.cantidadRequerida = cantidadRequerida;
     }
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
-    public Long getProducto_id() {
-        return producto_id;
-    }
-    public void setProducto_id(Long producto_id) {
-        this.producto_id = producto_id;
-    }
-    public Long getTrabajo_tercerizado_id() {
-        return trabajo_tercerizado_id;
-    }
-    public void setTrabajo_tercerizado_id(Long trabajo_tercerizado_id) {
-        this.trabajo_tercerizado_id = trabajo_tercerizado_id;
-    }
-    public BigDecimal getCantidad_requerida() {
-        return cantidad_requerida;
-    }
-    public void setCantidad_requerida(BigDecimal cantidad_requerida) {
-        this.cantidad_requerida = cantidad_requerida;
-    }
-    
+
+    // --- GETTERS Y SETTERS ACTUALIZADOS CON OBJETOS ---
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public Producto getProducto() { return producto; }
+    public void setProducto(Producto producto) { this.producto = producto; }
+
+    public TrabajosTercerizado getTrabajoTercerizado() { return trabajoTercerizado; }
+    public void setTrabajoTercerizado(TrabajosTercerizado trabajoTercerizado) { this.trabajoTercerizado = trabajoTercerizado; }
+
+    public BigDecimal getCantidadRequerida() { return cantidadRequerida; }
+    public void setCantidadRequerida(BigDecimal cantidadRequerida) { this.cantidadRequerida = cantidadRequerida; }
 }
