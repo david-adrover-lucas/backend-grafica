@@ -6,21 +6,21 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.drover.demo.backend.entity.Detalle_presupuesto;
-import com.drover.demo.backend.repository.Detalle_presupuestoRepository;
+import com.drover.demo.backend.entity.DetallePresupuesto;
+import com.drover.demo.backend.repository.DetallePresupuestoRepository;
 
 @Service
 public class Detalle_presupuestoService {
 
-    private final Detalle_presupuestoRepository detallePresupuestoRepository;
+    private final DetallePresupuestoRepository detallePresupuestoRepository;
 
-    public Detalle_presupuestoService(Detalle_presupuestoRepository detallePresupuestoRepository) {
+    public Detalle_presupuestoService(DetallePresupuestoRepository detallePresupuestoRepository) {
         this.detallePresupuestoRepository = detallePresupuestoRepository;
     }
 
-    public List<Detalle_presupuesto> listar() {}
-    public Optional<Detalle_presupuesto> buscarPorId(Long id) {}
-    public Detalle_presupuesto guardar(Detalle_presupuesto detallePresupuesto) { }
+    public List<DetallePresupuesto> listar() {}
+    public Optional<DetallePresupuesto> buscarPorId(Long id) {}
+    public DetallePresupuesto guardar(DetallePresupuesto detallePresupuesto) { }
     public void eliminarPorId(Long id) {}
 
     private BigDecimal calcularCosto(){}

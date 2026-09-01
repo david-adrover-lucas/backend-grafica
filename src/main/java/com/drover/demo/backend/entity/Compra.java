@@ -10,71 +10,73 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+
+import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "compras")
 public class Compra {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    @Column( name = "proveedor_id")
-    private Long  proveedor_id;
-    @Column( name = "fecha",nullable = false)
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "proveedor_id", nullable = false) // FK real hacia proveedores.id
+    private Proveedor proveedor;
+
+    @Column(name = "fecha", nullable = false)
     private LocalDateTime fecha;
-    @Column(name="numero_compra", nullable = false, length = 30)
-    private String numero_compra;
-    @Column(name = "total",nullable = false,length = 15)
+
+    @Column(name = "numero_compra", nullable = false, length = 30)
+    private String numeroCompra;
+
+    @Column(name = "total", nullable = false, precision = 14, scale = 2)
     private BigDecimal total;
-    @Column(name = "observaciones")
+
+    @Column(name = "observaciones", columnDefinition = "TEXT") 
     private String observaciones;
-    
-    public Compra() {
+
+    @OneToMany(mappedBy = "compra", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<DetalleCompra> detalles = new ArrayList<>();
+
+    public Compra() {}
+
+    public Compra(Long id, Proveedor proveedor, LocalDateTime fecha, String numeroCompra, BigDecimal total,
+                  String observaciones, List<DetalleCompra> detalles) {
+        this.id = id;
+        this.proveedor = proveedor;
+        this.fecha = fecha;
+        this.numeroCompra = numeroCompra;
+        this.total = total;
+        this.observaciones = observaciones;
+        this.detalles = detalles;
     }
 
-    public Compra(Long id, Long proveedor_id, LocalDateTime fecha, String numero_compra, BigDecimal total,
-            String observaciones) {
-        this.id = id;
-        this.proveedor_id = proveedor_id;
-        this.fecha = fecha;
-        this.numero_compra = numero_compra;
-        this.total = total;
-        this.observaciones = observaciones;
-    }
-    
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
-    public Long getProveedor_id() {
-        return proveedor_id;
-    }
-    public void setProveedor_id(Long proveedor_id) {
-        this.proveedor_id = proveedor_id;
-    }
-    public LocalDateTime getFecha() {
-        return fecha;
-    }
-    public void setFecha(LocalDateTime fecha) {
-        this.fecha = fecha;
-    }
-    public String getNumero_compra() {
-        return numero_compra;
-    }
-    public void setNumero_compra(String numero_compra) {
-        this.numero_compra = numero_compra;
-    }
-    public BigDecimal getTotal() {
-        return total;
-    }
-    public void setTotal(BigDecimal total) {
-        this.total = total;
-    }
-    public String getObservaciones() {
-        return observaciones;
-    }
-    public void setObservaciones(String observaciones) {
-        this.observaciones = observaciones;
-    }
+    // --- GETTERS Y SETTERS ACTUALIZADOS ---
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public Proveedor getProveedor() { return proveedor; }
+    public void setProveedor(Proveedor proveedor) { this.proveedor = proveedor; }
+
+    public LocalDateTime getFecha() { return fecha; }
+    public void setFecha(LocalDateTime fecha) { this.fecha = fecha; }
+
+    public String getNumeroCompra() { return numeroCompra; }
+    public void setNumeroCompra(String numeroCompra) { this.numeroCompra = numeroCompra; }
+
+    public BigDecimal getTotal() { return total; }
+    public void setTotal(BigDecimal total) { this.total = total; }
+
+    public String getObservaciones() { return observaciones; }
+    public void setObservaciones(String observaciones) { this.observaciones = observaciones; }
+
+    public List<DetalleCompra> getDetalles() { return detalles; }
+    public void setDetalles(List<DetalleCompra> detalles) { this.detalles = detalles; }
 }
+

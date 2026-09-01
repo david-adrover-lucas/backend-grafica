@@ -11,7 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 @Entity
 @Table(name = "trabajos_tercerizados_venta")
-public class Trabajos_tercerizados_venta {
+public class TrabajosTercerizadosVenta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -102,7 +102,7 @@ public class Trabajos_tercerizados_venta {
     public void setFecha_finalizacion(LocalDateTime fecha_finalizacion) {
         this.fecha_finalizacion = fecha_finalizacion;
     }
-    public Trabajos_tercerizados_venta(Long id, Long venta_id, Long detalle_venta_id, Long trabajo_tecerizado_id,
+    public TrabajosTercerizadosVenta(Long id, Long venta_id, Long detalle_venta_id, Long trabajo_tecerizado_id,
             Long proveedor_id, BigDecimal cantidad, BigDecimal precio_unitario_historico,
             BigDecimal costo_total_historico, String estado, LocalDateTime fecha_envio,
             LocalDateTime fecha_finalizacion) {
@@ -118,6 +118,6 @@ public class Trabajos_tercerizados_venta {
         this.fecha_envio = fecha_envio;
         this.fecha_finalizacion = fecha_finalizacion;
     }
-    public Trabajos_tercerizados_venta() {
+    public TrabajosTercerizadosVenta() {
     }
 }

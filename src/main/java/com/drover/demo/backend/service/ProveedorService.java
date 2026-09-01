@@ -37,7 +37,7 @@ public class ProveedorService {
     }
    
     @Transactional
-    public void actualizar(Long id, Proveedor proveedor){
+    public void editar(Long id, Proveedor proveedor){
         Proveedor proveedorEncontrado = proveedorRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Proveedor no encontrado con el ID: " + id));
         

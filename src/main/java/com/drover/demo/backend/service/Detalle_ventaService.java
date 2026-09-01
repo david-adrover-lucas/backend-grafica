@@ -6,21 +6,21 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.drover.demo.backend.entity.Detalle_venta;
-import com.drover.demo.backend.repository.Detalle_ventaRepository;
+import com.drover.demo.backend.entity.DetalleVenta;
+import com.drover.demo.backend.repository.DetalleVentaRepository;
 
 @Service
 public class Detalle_ventaService {
 
-    private final Detalle_ventaRepository detalleVentaRepository;
+    private final DetalleVentaRepository detalleVentaRepository;
 
-    public Detalle_ventaService(Detalle_ventaRepository detalleVentaRepository) {
+    public Detalle_ventaService(DetalleVentaRepository detalleVentaRepository) {
         this.detalleVentaRepository = detalleVentaRepository;
     }
 
-    public List<Detalle_venta> listar() {}
-    public Optional<Detalle_venta> buscarPorId(Long id) {}
-    public Detalle_venta guardar(Detalle_venta detalleVenta) {}
+    public List<DetalleVenta> listar() {}
+    public Optional<DetalleVenta> buscarPorId(Long id) {}
+    public DetalleVenta guardar(DetalleVenta detalleVenta) {}
     public void eliminarPorId(Long id) {}
 
     private BigDecimal calcularPrecioUnitario(){}

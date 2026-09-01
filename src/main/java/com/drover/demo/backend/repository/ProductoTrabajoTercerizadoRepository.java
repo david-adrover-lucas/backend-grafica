@@ -7,15 +7,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.drover.demo.backend.entity.Producto_trabajo_tercerizado;
+import com.drover.demo.backend.entity.ProductoTrabajoTercerizado;
 
 @Repository
-public interface Producto_trabajo_tercerizadoRepository extends JpaRepository<Producto_trabajo_tercerizado, Long> {
+public interface ProductoTrabajoTercerizadoRepository extends JpaRepository<ProductoTrabajoTercerizado, Long> {
 
     @Query("select p from Producto_trabajo_tercerizado p where p.producto_id = :productoId")
-    List<Producto_trabajo_tercerizado> findByProductoId(@Param("productoId") Long productoId);
+    List<ProductoTrabajoTercerizado> findByProductoId(@Param("productoId") Long productoId);
 
     @Query("select p from Producto_trabajo_tercerizado p where p.trabajo_tercerizado_id = :trabajoTercerizadoId")
-    List<Producto_trabajo_tercerizado> findByTrabajoTercerizadoId(
+    List<ProductoTrabajoTercerizado> findByTrabajoTercerizadoId(
             @Param("trabajoTercerizadoId") Long trabajoTercerizadoId);
 }

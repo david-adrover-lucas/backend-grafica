@@ -11,7 +11,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "producto_trabajo_tercerizado")
-public class Producto_trabajo_tercerizado {
+public class ProductoTrabajoTercerizado {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -22,9 +22,9 @@ public class Producto_trabajo_tercerizado {
     private Long trabajo_tercerizado_id;
     @Column(name = "cantidad_requerida",nullable = false,length = 15)
     private BigDecimal cantidad_requerida;
-    public Producto_trabajo_tercerizado() {
+    public ProductoTrabajoTercerizado() {
     }
-    public Producto_trabajo_tercerizado(Long id, Long producto_id, Long trabajo_tercerizado_id,
+    public ProductoTrabajoTercerizado(Long id, Long producto_id, Long trabajo_tercerizado_id,
             BigDecimal cantidad_requerida) {
         this.id = id;
         this.producto_id = producto_id;

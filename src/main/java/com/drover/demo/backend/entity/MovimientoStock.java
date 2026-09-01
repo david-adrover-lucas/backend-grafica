@@ -12,7 +12,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name="movimientos_stock")
-public class Movimiento_stock {
+public class MovimientoStock {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -119,7 +119,7 @@ public class Movimiento_stock {
     public void setObservaciones(String observaciones) {
         this.observaciones = observaciones;
     }
-    public Movimiento_stock(Long id, Long insumo_id, Long compra_id, Long venta_id, Long detalle_venta_id, String tipo,
+    public MovimientoStock(Long id, Long insumo_id, Long compra_id, Long venta_id, Long detalle_venta_id, String tipo,
             BigDecimal cantidad, BigDecimal costo_unitario, BigDecimal costo_total, BigDecimal stock_anterior,
             BigDecimal stock_posterior, LocalDateTime fecha, String observaciones) {
         this.id = id;
@@ -136,6 +136,6 @@ public class Movimiento_stock {
         this.fecha = fecha;
         this.observaciones = observaciones;
     }
-    public Movimiento_stock() {
+    public MovimientoStock() {
     }
 }

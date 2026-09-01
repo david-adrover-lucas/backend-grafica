@@ -11,6 +11,9 @@ import com.drover.demo.backend.entity.Producto;
 public interface ProductoRepository extends JpaRepository<Producto, Long> {
 
     List<Producto> findByActivo(Boolean activo);
-    List<Producto> findByNombre(String nombre);
-    List<Producto> findByUnidad_venta(String unidad_venta);
+
+    List<Producto> findByNombreContainingIgnoreCase(String nombre);
+
+    // Permite agrupar o listar todos los productos que se venden por "m2", "lineal" o "unidad"
+    List<Producto> findByUnidadVenta(String unidadVenta);
 }

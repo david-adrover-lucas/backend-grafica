@@ -6,24 +6,24 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.drover.demo.backend.entity.Trabajos_tercerizados_venta;
-import com.drover.demo.backend.repository.Trabajos_tercerizados_ventaRepository;
+import com.drover.demo.backend.entity.TrabajosTercerizadosVenta;
+import com.drover.demo.backend.repository.TrabajosTercerizadosVentaRepository;
 
 @Service
 public class Trabajos_tercerizados_ventaService {
 
-    private final Trabajos_tercerizados_ventaRepository trabajosTercerizadosVentaRepository;
+    private final TrabajosTercerizadosVentaRepository trabajosTercerizadosVentaRepository;
 
     public Trabajos_tercerizados_ventaService(
-            Trabajos_tercerizados_ventaRepository trabajosTercerizadosVentaRepository) {
+            TrabajosTercerizadosVentaRepository trabajosTercerizadosVentaRepository) {
         this.trabajosTercerizadosVentaRepository = trabajosTercerizadosVentaRepository;
     }
 
-    public List<Trabajos_tercerizados_venta> listar() {}
-    public List<Trabajos_tercerizados_venta>listarTipo(){}
-    public List<Trabajos_tercerizados_venta> listarFechaEnvio(){}
-    public Optional<Trabajos_tercerizados_venta> buscarPorId(Long id) {}
-    public Trabajos_tercerizados_venta guardar(Trabajos_tercerizados_venta trabajosTercerizadosVenta) {}
+    public List<TrabajosTercerizadosVenta> listar() {}
+    public List<TrabajosTercerizadosVenta>listarTipo(){}
+    public List<TrabajosTercerizadosVenta> listarFechaEnvio(){}
+    public Optional<TrabajosTercerizadosVenta> buscarPorId(Long id) {}
+    public TrabajosTercerizadosVenta guardar(TrabajosTercerizadosVenta trabajosTercerizadosVenta) {}
     public void eliminarPorId(Long id) {}
 
     private BigDecimal calcularCostoTotal(){}

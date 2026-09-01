@@ -7,15 +7,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.drover.demo.backend.entity.Trabajos_tercerizado;
+import com.drover.demo.backend.entity.TrabajosTercerizado;
 
 @Repository
-public interface Trabajos_tercerizadoRepository extends JpaRepository<Trabajos_tercerizado, Long> {
+public interface TrabajosTercerizadoRepository extends JpaRepository<TrabajosTercerizado, Long> {
 
     @Query("select t from Trabajos_tercerizado t where t.proveedor_id = :proveedorId")
-    List<Trabajos_tercerizado> findByProveedorId(@Param("proveedorId") Long proveedorId);
+    List<TrabajosTercerizado> findByProveedorId(@Param("proveedorId") Long proveedorId);
 
-    List<Trabajos_tercerizado> findByActivo(Boolean activo);
+    List<TrabajosTercerizado> findByActivo(Boolean activo);
 
-    List<Trabajos_tercerizado> findByNombreContainingIgnoreCase(String nombre);
+    List<TrabajosTercerizado> findByNombreContainingIgnoreCase(String nombre);
 }

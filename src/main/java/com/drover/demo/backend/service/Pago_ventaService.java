@@ -5,21 +5,21 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.drover.demo.backend.entity.Pago_venta;
-import com.drover.demo.backend.repository.Pago_ventaRepository;
+import com.drover.demo.backend.entity.PagoVenta;
+import com.drover.demo.backend.repository.PagoVentaRepository;
 
 @Service
 public class Pago_ventaService {
 
-    private final Pago_ventaRepository pagoVentaRepository;
+    private final PagoVentaRepository pagoVentaRepository;
 
-    public Pago_ventaService(Pago_ventaRepository pagoVentaRepository) {
+    public Pago_ventaService(PagoVentaRepository pagoVentaRepository) {
         this.pagoVentaRepository = pagoVentaRepository;
     }
 
-    public List<Pago_venta> listar() {}
-    public Optional<Pago_venta> buscarPorId(Long id) {}
-    public Pago_venta guardar(Pago_venta pagoVenta) {}
+    public List<PagoVenta> listar() {}
+    public Optional<PagoVenta> buscarPorId(Long id) {}
+    public PagoVenta guardar(PagoVenta pagoVenta) {}
     public void eliminarPorId(Long id) { }
 
     

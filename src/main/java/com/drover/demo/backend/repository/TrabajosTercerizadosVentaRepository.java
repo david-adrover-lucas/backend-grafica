@@ -7,23 +7,23 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.drover.demo.backend.entity.Trabajos_tercerizados_venta;
+import com.drover.demo.backend.entity.TrabajosTercerizadosVenta;
 
 @Repository
-public interface Trabajos_tercerizados_ventaRepository extends JpaRepository<Trabajos_tercerizados_venta, Long> {
+public interface TrabajosTercerizadosVentaRepository extends JpaRepository<TrabajosTercerizadosVenta, Long> {
 
     @Query("select t from Trabajos_tercerizados_venta t where t.venta_id = :ventaId")
-    List<Trabajos_tercerizados_venta> findByVentaId(@Param("ventaId") Long ventaId);
+    List<TrabajosTercerizadosVenta> findByVentaId(@Param("ventaId") Long ventaId);
 
     @Query("select t from Trabajos_tercerizados_venta t where t.detalle_venta_id = :detalleVentaId")
-    List<Trabajos_tercerizados_venta> findByDetalleVentaId(@Param("detalleVentaId") Long detalleVentaId);
+    List<TrabajosTercerizadosVenta> findByDetalleVentaId(@Param("detalleVentaId") Long detalleVentaId);
 
     @Query("select t from Trabajos_tercerizados_venta t where t.trabajo_tercerizado_id = :trabajoTercerizadoId")
-    List<Trabajos_tercerizados_venta> findByTrabajoTercerizadoId(
+    List<TrabajosTercerizadosVenta> findByTrabajoTercerizadoId(
             @Param("trabajoTercerizadoId") Long trabajoTercerizadoId);
 
     @Query("select t from Trabajos_tercerizados_venta t where t.proveedor_id = :proveedorId")
-    List<Trabajos_tercerizados_venta> findByProveedorId(@Param("proveedorId") Long proveedorId);
+    List<TrabajosTercerizadosVenta> findByProveedorId(@Param("proveedorId") Long proveedorId);
 
-    List<Trabajos_tercerizados_venta> findByEstado(String estado);
+    List<TrabajosTercerizadosVenta> findByEstado(String estado);
 }

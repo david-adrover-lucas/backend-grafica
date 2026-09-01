@@ -11,7 +11,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "costos_escala_tercerizado")
-public class Costos_escala_tercerizado {
+public class CostosEscalaTercerizado {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -27,10 +27,10 @@ public class Costos_escala_tercerizado {
     @Column(name = "activo",nullable = false)
     private Boolean activo;
    
-    public Costos_escala_tercerizado() {
+    public CostosEscalaTercerizado() {
     }
    
-    public Costos_escala_tercerizado(Long id, Long trabajo_tercerizado_id, BigDecimal cantidad_desde,
+    public CostosEscalaTercerizado(Long id, Long trabajo_tercerizado_id, BigDecimal cantidad_desde,
             BigDecimal cantidad_hasta, BigDecimal precio_unitario, Boolean activo) {
         this.id = id;
         this.trabajo_tercerizado_id = trabajo_tercerizado_id;

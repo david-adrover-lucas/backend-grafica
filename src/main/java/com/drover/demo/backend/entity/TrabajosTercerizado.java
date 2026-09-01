@@ -9,7 +9,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "trabajos_tercerizados")
-public class Trabajos_tercerizado {
+public class TrabajosTercerizado {
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -22,9 +22,9 @@ public class Trabajos_tercerizado {
     private String unidad_calculo;
     @Column(name = "activo", nullable = false)
     private Boolean activo;
-    public Trabajos_tercerizado() {
+    public TrabajosTercerizado() {
     }
-    public Trabajos_tercerizado(Long id, Long provedor_id, String nombre, String unidad_calculo, Boolean activo) {
+    public TrabajosTercerizado(Long id, Long provedor_id, String nombre, String unidad_calculo, Boolean activo) {
         this.id = id;
         this.proveedor_id = provedor_id;
         this.nombre = nombre;

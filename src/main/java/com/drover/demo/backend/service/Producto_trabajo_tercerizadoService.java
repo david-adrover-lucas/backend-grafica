@@ -5,22 +5,22 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.drover.demo.backend.entity.Producto_trabajo_tercerizado;
-import com.drover.demo.backend.repository.Producto_trabajo_tercerizadoRepository;
+import com.drover.demo.backend.entity.ProductoTrabajoTercerizado;
+import com.drover.demo.backend.repository.ProductoTrabajoTercerizadoRepository;
 
 @Service
 public class Producto_trabajo_tercerizadoService {
 
-    private final Producto_trabajo_tercerizadoRepository productoTrabajoTercerizadoRepository;
+    private final ProductoTrabajoTercerizadoRepository productoTrabajoTercerizadoRepository;
 
     public Producto_trabajo_tercerizadoService(
-            Producto_trabajo_tercerizadoRepository productoTrabajoTercerizadoRepository) {
+            ProductoTrabajoTercerizadoRepository productoTrabajoTercerizadoRepository) {
         this.productoTrabajoTercerizadoRepository = productoTrabajoTercerizadoRepository;
     }
 
-    public List<Producto_trabajo_tercerizado> listar() { }
-    public Optional<Producto_trabajo_tercerizado> buscarPorId(Long id){ }
-    public Producto_trabajo_tercerizado guardar(Producto_trabajo_tercerizado productoTrabajoTercerizado) {}
+    public List<ProductoTrabajoTercerizado> listar() { }
+    public Optional<ProductoTrabajoTercerizado> buscarPorId(Long id){ }
+    public ProductoTrabajoTercerizado guardar(ProductoTrabajoTercerizado productoTrabajoTercerizado) {}
     public void eliminarPorId(Long id) {}
 
     

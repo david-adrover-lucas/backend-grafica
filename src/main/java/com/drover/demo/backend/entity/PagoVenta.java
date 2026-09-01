@@ -11,7 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 @Entity
 @Table(name = "pagos_venta")
-public class Pago_venta {
+public class PagoVenta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -61,7 +61,7 @@ public class Pago_venta {
     public void setObservacion(String observacion) {
         this.observaciones = observacion;
     }
-    public Pago_venta(Long id, Long venta_id, LocalDateTime fecha, BigDecimal monto, String medio_pago,
+    public PagoVenta(Long id, Long venta_id, LocalDateTime fecha, BigDecimal monto, String medio_pago,
             String observaciones) {
         this.id = id;
         this.venta_id = venta_id;
@@ -70,7 +70,7 @@ public class Pago_venta {
         this.medio_pago = medio_pago;
         this.observaciones = observaciones;
     }
-    public Pago_venta() {
+    public PagoVenta() {
     }
 
 }

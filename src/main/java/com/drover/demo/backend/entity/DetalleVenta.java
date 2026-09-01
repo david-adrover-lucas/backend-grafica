@@ -11,7 +11,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "detalle_ventas")
-public class Detalle_venta {
+public class DetalleVenta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -108,7 +108,7 @@ public class Detalle_venta {
     public void setSubtotal(BigDecimal subtotal) {
         this.subtotal = subtotal;
     }
-    public Detalle_venta(Long id, Long venta_id, Long producto_id, BigDecimal cantidad, BigDecimal ancho,
+    public DetalleVenta(Long id, Long venta_id, Long producto_id, BigDecimal cantidad, BigDecimal ancho,
             BigDecimal alto, BigDecimal precio_unitario_historico, BigDecimal costo_historico,
             BigDecimal monto_ganancia_historico, BigDecimal monto_comision_historico, BigDecimal subtotal) {
         this.id = id;
@@ -123,6 +123,6 @@ public class Detalle_venta {
         this.monto_comision_historico = monto_comision_historico;
         this.subtotal = subtotal;
     }
-    public Detalle_venta() {
+    public DetalleVenta() {
     }
 }

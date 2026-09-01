@@ -9,88 +9,90 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+
+import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "productos")
 public class Producto {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
+    @Column(name = "id")
     private Long id;
+
     @Column(name = "nombre", nullable = false, length = 150)
     private String nombre;
-    @Column(name = "descripcion")
+
+    @Column(name = "descripcion", columnDefinition = "TEXT")
     private String descripcion;
+
     @Column(name = "unidad_venta", nullable = false, length = 20)
-    private String unidad_venta;
-    @Column(name = "costo_actual", nullable = false, length = 15)
-    private BigDecimal costo_actual;
-    @Column(name = "monto_ganancia", nullable = false, length = 15)
-    private BigDecimal monto_ganancia;
-    @Column(name="precio_venta",nullable = false,length = 15)
-    private BigDecimal precio_venta;
-    @Column(name="activo",nullable = false) 
-    private Boolean activo;
-    public Producto() {
-    }
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
-    public String getNombre() {
-        return nombre;
-    }
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-    public String getDescripcion() {
-        return descripcion;
-    }
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-    public String getUnidad_venta() {
-        return unidad_venta;
-    }
-    public void setUnidad_venta(String unidad_venta) {
-        this.unidad_venta = unidad_venta;
-    }
-    public BigDecimal getCosto_actual() {
-        return costo_actual;
-    }
-    public void setCosto_actual(BigDecimal costo_actual) {
-        this.costo_actual = costo_actual;
-    }
-    public BigDecimal getMonto_ganancia() {
-        return monto_ganancia;
-    }
-    public void setMonto_ganancia(BigDecimal monto_ganancia) {
-        this.monto_ganancia = monto_ganancia;
-    }
-    public BigDecimal getPrecio_venta() {
-        return precio_venta;
-    }
-    public void setPrecio_venta(BigDecimal precio_venta) {
-        this.precio_venta = precio_venta;
-    }
-    public Boolean getActivo() {
-        return activo;
-    }
-    public void setActivo(Boolean activo) {
-        this.activo = activo;
-    }
-    public Producto(Long id, String nombre, String descripcion, String unidad_venta, BigDecimal costo_actual,
-            BigDecimal monto_ganancia, BigDecimal precio_venta, Boolean activo) {
+    private String unidadVenta; 
+
+    @Column(name = "costo_actual", nullable = false, precision = 14, scale = 2)
+    private BigDecimal costoActual;
+
+    @Column(name = "monto_ganancia", nullable = false, precision = 14, scale = 2)
+    private BigDecimal montoGanancia; // Recuerda que actúa como Porcentaje de Ganancia en el Service
+
+    @Column(name = "precio_venta", nullable = false, precision = 14, scale = 2)
+    private BigDecimal precioVenta;
+
+    @Column(name = "activo", nullable = false) 
+    private Boolean activo = true; 
+
+    // 🌟 CORRECCIÓN CLAVE: Agregamos la relación con la tabla intermedia (receta)
+    // Usamos CascadeType.ALL para poder guardar y editar el producto y su receta juntos en un solo paso
+    @OneToMany(mappedBy = "producto", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<ProductoInsumo> insumosComponentes = new ArrayList<>();
+
+    // Constructor vacío obligatorio para JPA
+    public Producto() {}
+
+    // Constructor completo actualizado incluyendo la lista de componentes
+    public Producto(Long id, String nombre, String descripcion, String unidadVenta, BigDecimal costoActual,
+                    BigDecimal montoGanancia, BigDecimal precioVenta, Boolean activo, List<ProductoInsumo> insumosComponentes) {
         this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
-        this.unidad_venta = unidad_venta;
-        this.costo_actual = costo_actual;
-        this.monto_ganancia = monto_ganancia;
-        this.precio_venta = precio_venta;
+        this.unidadVenta = unidadVenta;
+        this.costoActual = costoActual;
+        this.montoGanancia = montoGanancia;
+        this.precioVenta = precioVenta;
         this.activo = activo;
+        this.insumosComponentes = insumosComponentes != null ? insumosComponentes : new ArrayList<>();
     }
 
+    // --- GETTERS Y SETTERS CORREGIDOS Y ACTUALIZADOS ---
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
+
+    // Corregido nombre del método a getDescripcion para evitar problemas de firmas
+    public String getDescripcion() { return descripcion; } 
+    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
+
+    public String getUnidadVenta() { return unidadVenta; }
+    public void setUnidadVenta(String unidadVenta) { this.unidadVenta = unidadVenta; }
+
+    public BigDecimal getCostoActual() { return costoActual; }
+    public void setCostoActual(BigDecimal costoActual) { this.costoActual = costoActual; }
+
+    public BigDecimal getMontoGanancia() { return montoGanancia; }
+    public void setMontoGanancia(BigDecimal montoGanancia) { this.montoGanancia = montoGanancia; }
+
+    public BigDecimal getPrecioVenta() { return precioVenta; }
+    public void setPrecioVenta(BigDecimal precioVenta) { this.precioVenta = precioVenta; }
+
+    public Boolean getActivo() { return activo; }
+    public void setActivo(Boolean activo) { this.activo = activo; }
+
+    // 🌟 GETTER Y SETTER OBLIGATORIOS PARA EL FUNCIONAMIENTO DEL SERVICE
+    public List<ProductoInsumo> getInsumosComponentes() { return insumosComponentes; }
+    public void setInsumosComponentes(List<ProductoInsumo> insumosComponentes) { this.insumosComponentes = insumosComponentes; }
 }
-    
