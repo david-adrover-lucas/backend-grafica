@@ -122,38 +122,6 @@ public class DetalleVentaService {
         return detalle.getCantidad().multiply(detalle.getPrecioUnitarioHistorico()).setScale(2, RoundingMode.HALF_UP);
     }
 
-
-    private void descontarInsumosDelStock(DetalleVenta detalle) {
-        Producto productoReal = productoRepository.findById(detalle.getProducto().getId()).orElse(null);
-        if (productoReal == null || productoReal.getInsumosComponentes() == null) return;
-
-        String unidadVenta = productoReal.getUnidadVenta().strip().toLowerCase();
-        
-        // Multiplicador de escala: Si es m2, multiplicamos por la superficie del cartel, sino multiplicamos por la cantidad plana
-        BigDecimal factorEscalaTotal = "m2".equals(unidadVenta) 
-            ? detalle.getCantidad().multiply(detalle.getAncho().multiply(detalle.getAlto()))
-            : detalle.getCantidad();
-
-        for (ProductoInsumo recetaComponente : productoReal.getInsumosComponentes()) {
-            Insumo insumoDeposito = recetaComponente.getInsumo();
-            
-            // Cantidad total a restar = (Cantidad que gasta la receta base * el factor de escala de la venta)
-            BigDecimal cantidadAConsumir = recetaComponente.getCantidad().multiply(factorEscalaTotal);
-            
-            // Restamos del depósito
-            BigDecimal nuevoStock = insumoDeposito.getStockActual().subtract(cantidadAConsumir);
-            
-            // Opcional: Podrías lanzar un aviso si nuevoStock es menor que stockMinimo, cumpliendo la regla de control
-            if (nuevoStock.compareTo(BigDecimal.ZERO) < 0) {
-                throw new RuntimeException("No hay suficiente stock en el depósito del insumo '" 
-                    + insumoDeposito.getNombre() + "'. Stock actual: " + insumoDeposito.getStockActual());
-            }
-
-            insumoDeposito.setStockActual(nuevoStock);
-            insumoRepository.save(insumoDeposito); // Impactamos el nuevo stock real en la BD de insumos
-        }
-    }
-
     private DetalleVenta validarYCalcularDetalle(DetalleVenta detalle) {
         if (detalle == null) {
             throw new IllegalArgumentException("El renglón del detalle no puede estar vacío.");
