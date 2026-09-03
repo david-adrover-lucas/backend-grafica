@@ -8,121 +8,107 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "detalle_ventas")
 public class DetalleVenta {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    @Column(name = "venta_id")
-    private Long venta_id;
-    @Column(name = "producto_id")
-    private Long producto_id;
-    @Column(name = "cantidad", nullable = false, length = 15)
+
+    // CORRECCIÓN 1: Relación real con el Comprobante de Venta madre (FK a ventas.id)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "venta_id", nullable = false)
+    @JsonIgnore // Evita bucles infinitos de serialización en Postman
+    private Venta venta;
+
+    // CORRECCIÓN 2: Relación real con el Producto vendido (FK a productos.id)
+    @ManyToOne(fetch = FetchType.EAGER) // Trae los datos básicos del producto de inmediato al consultar
+    @JoinColumn(name = "producto_id", nullable = false)
+    private Producto producto;
+
+    // CORRECCIÓN DECIMAL: Cantidades y medidas industriales exactas (DECIMAL 14,4 según tu PDF)
+    @Column(name = "cantidad", nullable = false, precision = 14, scale = 4)
     private BigDecimal cantidad;
-    @Column(name = "ancho",  length = 15)
-    private BigDecimal ancho;
-    @Column(name = "alto",  length = 15)
-    private BigDecimal alto;
-    @Column(name = "precio_unitario_historico", nullable = false, length = 15)
-    private BigDecimal precio_unitario_historico;
-    @Column(name = "costo_historico", nullable = false, length = 15)
-    private BigDecimal costo_historico;
-    @Column(name = "monto_ganancia_historico", nullable = false, length = 15)
-    private BigDecimal monto_ganancia_historico;
-    @Column(name = "monto_comision_historico", nullable = false, length = 15)
-    private BigDecimal monto_comision_historico;
-    @Column(name = "subtotal", nullable = false, length = 15)
+
+    @Column(name = "ancho", precision = 14, scale = 4)
+    private BigDecimal ancho; // Puede ser NULL si el producto se vende por unidad suelta o lineal
+
+    @Column(name = "alto", precision = 14, scale = 4)
+    private BigDecimal alto; // Puede ser NULL si el producto se vende por unidad suelta o lineal
+
+    // CORRECCIÓN DECIMAL: Auditorías contables e históricos llevan escala 2 (DECIMAL 14,2)
+    @Column(name = "precio_unitario_historico", nullable = false, precision = 14, scale = 2)
+    private BigDecimal precioUnitarioHistorico; // Cambiado a camelCase
+
+    @Column(name = "costo_historico", nullable = false, precision = 14, scale = 2)
+    private BigDecimal costoHistorico;
+
+    @Column(name = "monto_ganancia_historico", nullable = false, precision = 14, scale = 2)
+    private BigDecimal montoGananciaHistorico;
+
+    @Column(name = "monto_comision_historico", nullable = false, precision = 14, scale = 2)
+    private BigDecimal montoComisionHistorico;
+
+    @Column(name = "subtotal", nullable = false, precision = 14, scale = 2)
     private BigDecimal subtotal;
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
+
+    // Constructor vacío obligatorio para JPA
+    public DetalleVenta() {}
+
+    // Constructor completo actualizado con objetos y buenas prácticas
+    public DetalleVenta(Long id, Venta venta, Producto producto, BigDecimal cantidad, BigDecimal ancho,
+                        BigDecimal alto, BigDecimal precioUnitarioHistorico, BigDecimal costoHistorico,
+                        BigDecimal montoGananciaHistorico, BigDecimal montoComisionHistorico, BigDecimal subtotal) {
         this.id = id;
-    }
-    public Long getVenta_id() {
-        return venta_id;
-    }
-    public void setVenta_id(Long venta_id) {
-        this.venta_id = venta_id;
-    }
-    public Long getProducto_id() {
-        return producto_id;
-    }
-    public void setProducto_id(Long producto_id) {
-        this.producto_id = producto_id;
-    }
-    public BigDecimal getCantidad() {
-        return cantidad;
-    }
-    public void setCantidad(BigDecimal cantidad) {
-        this.cantidad = cantidad;
-    }
-    public BigDecimal getAncho() {
-        return ancho;
-    }
-    public void setAncho(BigDecimal ancho) {
-        this.ancho = ancho;
-    }
-    public BigDecimal getAlto() {
-        return alto;
-    }
-    public void setAlto(BigDecimal alto) {
-        this.alto = alto;
-    }
-    public BigDecimal getPrecio_unitario_historico() {
-        return precio_unitario_historico;
-    }
-    public void setPrecio_unitario_historico(BigDecimal precio_unitario_historico) {
-        this.precio_unitario_historico = precio_unitario_historico;
-    }
-    public BigDecimal getCosto_historico() {
-        return costo_historico;
-    }
-    public void setCosto_historico(BigDecimal costo_historico) {
-        this.costo_historico = costo_historico;
-    }
-    public BigDecimal getMonto_ganancia_historico() {
-        return monto_ganancia_historico;
-    }
-    public void setMonto_ganancia_historico(BigDecimal monto_ganancia_historico) {
-        this.monto_ganancia_historico = monto_ganancia_historico;
-    }
-    public BigDecimal getMonto_comision_ganancia_historico() {
-        return monto_comision_historico;
-    }
-    public void setMonto_comision_ganancia_historico(BigDecimal monto_comision_ganancia_historico) {
-        this.monto_comision_historico = monto_comision_ganancia_historico;
-    }
-    public BigDecimal getMonto_comicion_historico() {
-        return monto_comision_historico;
-    }
-    public void setMonto_comicion_historico(BigDecimal monto_comicion_historico) {
-        this.monto_comision_historico = monto_comicion_historico;
-    }
-    public BigDecimal getSubtotal() {
-        return subtotal;
-    }
-    public void setSubtotal(BigDecimal subtotal) {
-        this.subtotal = subtotal;
-    }
-    public DetalleVenta(Long id, Long venta_id, Long producto_id, BigDecimal cantidad, BigDecimal ancho,
-            BigDecimal alto, BigDecimal precio_unitario_historico, BigDecimal costo_historico,
-            BigDecimal monto_ganancia_historico, BigDecimal monto_comision_historico, BigDecimal subtotal) {
-        this.id = id;
-        this.venta_id = venta_id;
-        this.producto_id = producto_id;
+        this.venta = venta;
+        this.producto = producto;
         this.cantidad = cantidad;
         this.ancho = ancho;
         this.alto = alto;
-        this.precio_unitario_historico = precio_unitario_historico;
-        this.costo_historico = costo_historico;
-        this.monto_ganancia_historico = monto_ganancia_historico;
-        this.monto_comision_historico = monto_comision_historico;
+        this.precioUnitarioHistorico = precioUnitarioHistorico;
+        this.costoHistorico = costoHistorico;
+        this.montoGananciaHistorico = montoGananciaHistorico;
+        this.montoComisionHistorico = montoComisionHistorico;
         this.subtotal = subtotal;
     }
-    public DetalleVenta() {
-    }
+
+    // --- GETTERS Y SETTERS CORREGIDOS A CAMELCASE Y ENFOQUE DE OBJETOS ---
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public Venta getVenta() { return venta; }
+    public void setVenta(Venta venta) { this.venta = venta; }
+
+    public Producto getProducto() { return producto; }
+    public void setProducto(Producto producto) { this.producto = producto; }
+
+    public BigDecimal getCantidad() { return cantidad; }
+    public void setCantidad(BigDecimal cantidad) { this.cantidad = cantidad; }
+
+    public BigDecimal getAncho() { return ancho; }
+    public void setAncho(BigDecimal ancho) { this.ancho = ancho; }
+
+    public BigDecimal getAlto() { return alto; }
+    public void setAlto(BigDecimal alto) { this.alto = alto; }
+
+    public BigDecimal getPrecioUnitarioHistorico() { return precioUnitarioHistorico; }
+    public void setPrecioUnitarioHistorico(BigDecimal precioUnitarioHistorico) { this.precioUnitarioHistorico = precioUnitarioHistorico; }
+
+    public BigDecimal getCostoHistorico() { return costoHistorico; }
+    public void setCostoHistorico(BigDecimal costoHistorico) { this.costoHistorico = costoHistorico; }
+
+    public BigDecimal getMontoGananciaHistorico() { return montoGananciaHistorico; }
+    public void setMontoGananciaHistorico(BigDecimal montoGananciaHistorico) { this.montoGananciaHistorico = montoGananciaHistorico; }
+
+    public BigDecimal getMontoComisionHistorico() { return montoComisionHistorico; }
+    public void setMontoComisionHistorico(BigDecimal montoComisionHistorico) { this.montoComisionHistorico = montoComisionHistorico; }
+
+    public BigDecimal getSubtotal() { return subtotal; }
+    public void setSubtotal(BigDecimal subtotal) { this.subtotal = subtotal; }
 }
+

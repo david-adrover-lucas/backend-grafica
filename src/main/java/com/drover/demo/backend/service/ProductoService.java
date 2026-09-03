@@ -3,7 +3,6 @@ package com.drover.demo.backend.service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -14,11 +13,13 @@ import com.drover.demo.backend.repository.ProductoRepository;
 import jakarta.transaction.Transactional;
 
 
-
 @Service
 public class ProductoService {
 
     private final ProductoRepository productoRepository;
+    
+    // 🌟 BLINDAJE EXTRA: Lista estricta de las únicas unidades comerciales permitidas en la gráfica
+    private final List<String> unidadesPermitidas = List.of("m2", "lineal", "unidad", "plancha");
 
     public ProductoService(ProductoRepository productoRepository) {
         this.productoRepository = productoRepository;
@@ -26,13 +27,18 @@ public class ProductoService {
     
     @Transactional
     public void guardar(Producto producto) {
-        // Al guardar de la forma tradicional, calcula el costo por insumos y le aplica el % de ganancia
         if (producto == null) {
             throw new IllegalArgumentException("La consulta de producto no puede estar vacía.");
         }
         
         producto.setNombre(validarString(producto.getNombre()));
-        producto.setUnidadVenta(validarString(producto.getUnidadVenta()));
+        
+        // Sanitizamos y validamos la unidad de venta seleccionada
+        String unidadLimpia = validarString(producto.getUnidadVenta());
+        if (!unidadesPermitidas.contains(unidadLimpia)) {
+            throw new IllegalArgumentException("Unidad de venta inexistente. Las opciones válidas son: " + unidadesPermitidas);
+        }
+        producto.setUnidadVenta(unidadLimpia);
         
         if (producto.getMontoGanancia() == null || producto.getMontoGanancia().compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("El porcentaje de ganancia es obligatorio y no puede ser negativo.");
@@ -44,11 +50,11 @@ public class ProductoService {
 
         enlazarComponentesAlPadre(producto);
 
-        // 1. Calculamos costo actual
+        // 1. Calculamos costo actual basado en insumos
         BigDecimal costoCalculado = calcularCostoActual(producto.getInsumosComponentes());
         producto.setCostoActual(costoCalculado);
 
-        // 2. Calculamos precio final basándonos en el PORCENTAJE (monto_ganancia actúa como % de ahora en más)
+        // 2. Calculamos precio final basándonos en el PORCENTAJE
         BigDecimal precioCalculado = calcularPrecioVentaPorPorcentaje(producto.getCostoActual(), producto.getMontoGanancia());
         producto.setPrecioVenta(precioCalculado);
 
@@ -68,7 +74,7 @@ public class ProductoService {
         BigDecimal costoCalculado = calcularCostoActual(producto.getInsumosComponentes());
         producto.setCostoActual(costoCalculado);
 
-       
+        // 2. REGLA INVERSA: Si mandan un precio de venta manual, calculamos el porcentaje resultante
         if (producto.getPrecioVenta() != null && producto.getPrecioVenta().compareTo(BigDecimal.ZERO) > 0) {
             
             if (producto.getPrecioVenta().compareTo(producto.getCostoActual()) < 0) {
@@ -76,16 +82,14 @@ public class ProductoService {
                     + ") no puede ser menor que el costo de sus insumos (" + producto.getCostoActual() + "). ¡Venta a pérdida!");
             }
 
-         
             BigDecimal nuevoPorcentaje = producto.getPrecioVenta()
                 .divide(producto.getCostoActual(), 4, RoundingMode.HALF_UP)
                 .subtract(BigDecimal.ONE)
                 .multiply(new BigDecimal("100"))
-                .setScale(2, RoundingMode.HALF_UP); // Guardamos con dos decimales de precisión
+                .setScale(2, RoundingMode.HALF_UP);
             
             producto.setMontoGanancia(nuevoPorcentaje);
         } 
-        // Si no enviaron precio manual, calculamos el precio de venta normal usando el porcentaje provisto
         else {
             if (producto.getMontoGanancia() == null || producto.getMontoGanancia().compareTo(BigDecimal.ZERO) < 0) {
                 throw new IllegalArgumentException("Si no define un precio manual, el porcentaje de ganancia es obligatorio.");
@@ -94,12 +98,18 @@ public class ProductoService {
             producto.setPrecioVenta(precioCalculado);
         }
 
+        // 🌟 VALIDACIÓN EN LA EDICIÓN: Evitamos que rompan la unidad de venta al actualizar
+        String unidadLimpia = validarString(producto.getUnidadVenta());
+        if (!unidadesPermitidas.contains(unidadLimpia)) {
+            throw new IllegalArgumentException("Unidad de venta inválida para modificar. Use: " + unidadesPermitidas);
+        }
+
         // 3. Traspasamos valores normalizados al registro persistente de Hibernate
         productoEncontrado.setActivo(producto.getActivo() != null ? producto.getActivo() : true);
         productoEncontrado.setNombre(validarString(producto.getNombre()));
-        productoEncontrado.setUnidadVenta(validarString(producto.getUnidadVenta()));
+        productoEncontrado.setUnidadVenta(unidadLimpia); // Guardamos la unidad validada de forma segura
         productoEncontrado.setCostoActual(producto.getCostoActual());
-        productoEncontrado.setMontoGanancia(producto.getMontoGanancia()); // Guarda el % nuevo o viejo
+        productoEncontrado.setMontoGanancia(producto.getMontoGanancia()); 
         productoEncontrado.setPrecioVenta(producto.getPrecioVenta());
 
         // 4. Actualizamos la lista de materiales componentes en cascada
@@ -123,14 +133,16 @@ public class ProductoService {
     }
    
     public List<Producto> listarUnidad_venta(String unidadVenta) {
-        return productoRepository.findByUnidadVenta(validarString(unidadVenta));
+        String unidadLimpia = validarString(unidadVenta);
+        if (!unidadesPermitidas.contains(unidadLimpia)) {
+            throw new IllegalArgumentException("La unidad de búsqueda no es válida. Use: " + unidadesPermitidas);
+        }
+        return productoRepository.findByUnidadVenta(unidadLimpia);
     }
 
     // --- MÉTODOS PRIVADOS ---
     
- 
     private BigDecimal calcularPrecioVentaPorPorcentaje(BigDecimal costo, BigDecimal porcentaje) {
-        // Factor = (Porcentaje / 100) + 1
         BigDecimal factorGanancia = porcentaje
             .divide(new BigDecimal("100"), 4, RoundingMode.HALF_UP)
             .add(BigDecimal.ONE);
@@ -172,4 +184,5 @@ public class ProductoService {
         }
     }
 }
+
 

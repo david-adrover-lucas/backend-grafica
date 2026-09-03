@@ -9,133 +9,123 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
 
 @Entity
-@Table(name="movimientos_stock")
+@Table(name = "movimientos_stock")
 public class MovimientoStock {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    @Column(name = "insumo_id")
-    private Long insumo_id;
-    @Column(name = "compra_id")
-    private Long compra_id;
-    @Column(name = "venta_id")
-    private Long venta_id;
-    @Column(name = "detalle_venta_id")
-    private Long detalle_venta_id;
-    @Column(name = "tipo", nullable = false,length = 30)
-    private String tipo;
-    @Column(name = "cantidad", nullable = false,length = 15)
+
+    // CORRECCIÓN 1: Relación obligatoria con el Insumo auditado (FK a insumos.id)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "insumo_id", nullable = false)
+    private Insumo insumo;
+
+    // CORRECCIÓN 2: Relación opcional con la Compra que generó la entrada (FK a compras.id)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "compra_id", nullable = true)
+    private Compra compra;
+
+    // CORRECCIÓN 3: Relación opcional con la Venta que generó la salida (FK a ventas.id)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "venta_id", nullable = true)
+    private Venta venta;
+
+    // CORRECCIÓN 4: Relación opcional con el renglón específico de la venta (FK a detalle_ventas.id)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "detalle_venta_id", nullable = true)
+    private DetalleVenta detalleVenta; // Formato camelCase
+
+    @Column(name = "tipo", nullable = false, length = 30)
+    private String tipo; // Ejemplos: "entrada_compra", "salida_venta", "ajuste_manual", "perdida"
+
+    // CORRECCIÓN DECIMAL: Cantidades y stocks con precisión industrial de 4 decimales (DECIMAL 14,4)
+    @Column(name = "cantidad", nullable = false, precision = 14, scale = 4)
     private BigDecimal cantidad;
-    @Column(name = "costo_unitario", nullable = false,length = 15)
-    private BigDecimal costo_unitario;
-    @Column(name = "costo_total", nullable = false,length = 15)    
-    private BigDecimal costo_total;
-    @Column(name = "stock_anterior", nullable = false,length = 15)    
-    private  BigDecimal stock_anterior;
-    @Column(name = "stock_posterior", nullable = false,length = 15)    
-    private BigDecimal stock_posterior;
+
+    @Column(name = "costo_unitario", nullable = false, precision = 14, scale = 4)
+    private BigDecimal costoUnitario; // Formato camelCase
+
+    // CORRECCIÓN DECIMAL: Totales monetarios contables con escala 2 (DECIMAL 14,2)
+    @Column(name = "costo_total", nullable = false, precision = 14, scale = 2)    
+    private BigDecimal costoTotal;
+
+    @Column(name = "stock_anterior", nullable = false, precision = 14, scale = 4)    
+    private BigDecimal stockAnterior;
+
+    @Column(name = "stock_posterior", nullable = false, precision = 14, scale = 4)    
+    private BigDecimal stockPosterior;
+
     @Column(name = "fecha", nullable = false)    
     private LocalDateTime fecha;
-    @Column(name = "observaciones")    
+
+    @Column(name = "observaciones", columnDefinition = "TEXT")    
     private String observaciones;
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
+
+    // Constructor vacío obligatorio para JPA
+    public MovimientoStock() {}
+
+    // Constructor completo actualizado con objetos relacionales
+    public MovimientoStock(Long id, Insumo insumo, Compra compra, Venta venta, DetalleVenta detalleVenta, String tipo,
+                           BigDecimal cantidad, BigDecimal costoUnitario, BigDecimal costoTotal, BigDecimal stockAnterior,
+                           BigDecimal stockPosterior, LocalDateTime fecha, String observaciones) {
         this.id = id;
-    }
-    public Long getInsumo_id() {
-        return insumo_id;
-    }
-    public void setInsumo_id(Long insumo_id) {
-        this.insumo_id = insumo_id;
-    }
-    public Long getCompra_id() {
-        return compra_id;
-    }
-    public void setCompra_id(Long compra_id) {
-        this.compra_id = compra_id;
-    }
-    public Long getVenta_id() {
-        return venta_id;
-    }
-    public void setVenta_id(Long venta_id) {
-        this.venta_id = venta_id;
-    }
-    public Long getDetalle_venta_id() {
-        return detalle_venta_id;
-    }
-    public void setDetalle_venta_id(Long detalle_venta_id) {
-        this.detalle_venta_id = detalle_venta_id;
-    }
-    public String getTipo() {
-        return tipo;
-    }
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
-    }
-    public BigDecimal getCantidad() {
-        return cantidad;
-    }
-    public void setCantidad(BigDecimal cantidad) {
-        this.cantidad = cantidad;
-    }
-    public BigDecimal getCosto_unitario() {
-        return costo_unitario;
-    }
-    public void setCosto_unitario(BigDecimal costo_unitario) {
-        this.costo_unitario = costo_unitario;
-    }
-    public BigDecimal getCosto_total() {
-        return costo_total;
-    }
-    public void setCosto_total(BigDecimal costo_total) {
-        this.costo_total = costo_total;
-    }
-    public BigDecimal getStock_anterior() {
-        return stock_anterior;
-    }
-    public void setStock_anterior(BigDecimal stock_anterior) {
-        this.stock_anterior = stock_anterior;
-    }
-    public BigDecimal getStock_posterior() {
-        return stock_posterior;
-    }
-    public void setStock_posterior(BigDecimal stock_posterior) {
-        this.stock_posterior = stock_posterior;
-    }
-    public LocalDateTime getFecha() {
-        return fecha;
-    }
-    public void setFecha(LocalDateTime fecha) {
-        this.fecha = fecha;
-    }
-    public String getObservaciones() {
-        return observaciones;
-    }
-    public void setObservaciones(String observaciones) {
-        this.observaciones = observaciones;
-    }
-    public MovimientoStock(Long id, Long insumo_id, Long compra_id, Long venta_id, Long detalle_venta_id, String tipo,
-            BigDecimal cantidad, BigDecimal costo_unitario, BigDecimal costo_total, BigDecimal stock_anterior,
-            BigDecimal stock_posterior, LocalDateTime fecha, String observaciones) {
-        this.id = id;
-        this.insumo_id = insumo_id;
-        this.compra_id = compra_id;
-        this.venta_id = venta_id;
-        this.detalle_venta_id = detalle_venta_id;
+        this.insumo = insumo;
+        this.compra = compra;
+        this.venta = venta;
+        this.detalleVenta = detalleVenta;
         this.tipo = tipo;
         this.cantidad = cantidad;
-        this.costo_unitario = costo_unitario;
-        this.costo_total = costo_total;
-        this.stock_anterior = stock_anterior;
-        this.stock_posterior = stock_posterior;
+        this.costoUnitario = costoUnitario;
+        this.costoTotal = costoTotal;
+        this.stockAnterior = stockAnterior;
+        this.stockPosterior = stockPosterior;
         this.fecha = fecha;
         this.observaciones = observaciones;
     }
-    public MovimientoStock() {
-    }
+
+    // --- GETTERS Y SETTERS CORREGIDOS A CAMELCASE Y OBJETOS ---
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public Insumo getInsumo() { return insumo; }
+    public void setInsumo(Insumo insumo) { this.insumo = insumo; }
+
+    public Compra getCompra() { return compra; }
+    public void setCompra(Compra compra) { this.compra = compra; }
+
+    public Venta getVenta() { return venta; }
+    public void setVenta(Venta venta) { this.venta = venta; }
+
+    public DetalleVenta getDetalleVenta() { return detalleVenta; }
+    public void setDetalleVenta(DetalleVenta detalleVenta) { this.detalleVenta = detalleVenta; }
+
+    public String getTipo() { return tipo; }
+    public void setTipo(String tipo) { this.tipo = tipo; }
+
+    public BigDecimal getCantidad() { return cantidad; }
+    public void setCantidad(BigDecimal cantidad) { this.cantidad = cantidad; }
+
+    public BigDecimal getCostoUnitario() { return costoUnitario; }
+    public void setCostoUnitario(BigDecimal costoUnitario) { this.costoUnitario = costoUnitario; }
+
+    public BigDecimal getCostoTotal() { return costoTotal; }
+    public void setCostoTotal(BigDecimal costoTotal) { this.costoTotal = costoTotal; }
+
+    public BigDecimal getStockAnterior() { return stockAnterior; }
+    public void setStockAnterior(BigDecimal stockAnterior) { this.stockAnterior = stockAnterior; }
+
+    public BigDecimal getStockPosterior() { return stockPosterior; }
+    public void setStockPosterior(BigDecimal stockPosterior) { this.stockPosterior = stockPosterior; }
+
+    public LocalDateTime getFecha() { return fecha; }
+    public void setFecha(LocalDateTime fecha) { this.fecha = fecha; }
+
+    public String getObservaciones() { return observaciones; }
+    public void setObservaciones(String observaciones) { this.observaciones = observaciones; }
 }

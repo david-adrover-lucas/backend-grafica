@@ -9,68 +9,67 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "pagos_venta")
 public class PagoVenta {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
-    @Column(name = "venta_id")
-    private Long venta_id;
+
+    // CORRECCIÓN 1: Relación real con la Venta madre (FK a ventas.id)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "venta_id", nullable = false)
+    @JsonIgnore // Evita bucles infinitos en Postman al serializar la venta y sus pagos
+    private Venta venta;
+
     @Column(name = "fecha", nullable = false)
     private LocalDateTime fecha;
-    @Column(name = "monto", nullable = false, length = 15)
+
+    // CORRECCIÓN DECIMAL: Configuración contable exacta para dinero (DECIMAL 14,2 según tu PDF)
+    @Column(name = "monto", nullable = false, precision = 14, scale = 2)
     private BigDecimal monto;
+
     @Column(name = "medio_pago", nullable = false, length = 50)
-    private String medio_pago;
-    @Column(name = "observaciones")
+    private String medioPago; // Cambiado a camelCase (Ej: "efectivo", "transferencia", "tarjeta")
+
+    @Column(name = "observaciones", columnDefinition = "TEXT")
     private String observaciones;
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
+
+    // Constructor vacío obligatorio para JPA
+    public PagoVenta() {}
+
+    // Constructor completo actualizado con objetos
+    public PagoVenta(Long id, Venta venta, LocalDateTime fecha, BigDecimal monto, String medioPago, String observaciones) {
         this.id = id;
-    }
-    public Long getVenta_id() {
-        return venta_id;
-    }
-    public void setVenta_id(Long venta_id) {
-        this.venta_id = venta_id;
-    }
-    public LocalDateTime getFecha() {
-        return fecha;
-    }
-    public void setFecha(LocalDateTime fecha) {
-        this.fecha = fecha;
-    }
-    public BigDecimal getMonto() {
-        return monto;
-    }
-    public void setMonto(BigDecimal monto) {
-        this.monto = monto;
-    }
-    public String getMedio_pago() {
-        return medio_pago;
-    }
-    public void setMedio_pago(String medio_pago) {
-        this.medio_pago = medio_pago;
-    }
-    public String getObservacion() {
-        return observaciones;
-    }
-    public void setObservacion(String observacion) {
-        this.observaciones = observacion;
-    }
-    public PagoVenta(Long id, Long venta_id, LocalDateTime fecha, BigDecimal monto, String medio_pago,
-            String observaciones) {
-        this.id = id;
-        this.venta_id = venta_id;
+        this.venta = venta;
         this.fecha = fecha;
         this.monto = monto;
-        this.medio_pago = medio_pago;
+        this.medioPago = medioPago;
         this.observaciones = observaciones;
     }
-    public PagoVenta() {
-    }
 
+    // --- GETTERS Y SETTERS CORREGIDOS ---
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public Venta getVenta() { return venta; }
+    public void setVenta(Venta venta) { this.venta = venta; }
+
+    public LocalDateTime getFecha() { return fecha; }
+    public void setFecha(LocalDateTime fecha) { this.fecha = fecha; }
+
+    public BigDecimal getMonto() { return monto; }
+    public void setMonto(BigDecimal monto) { this.monto = monto; }
+
+    public String getMedioPago() { return medioPago; }
+    public void setMedioPago(String medioPago) { this.medioPago = medioPago; }
+
+    public String getObservaciones() { return observaciones; }
+    public void setObservaciones(String observaciones) { this.observaciones = observaciones; }
 }
+
