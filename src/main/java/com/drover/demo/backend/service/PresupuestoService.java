@@ -6,6 +6,9 @@ import org.springframework.stereotype.Service;
 import com.drover.demo.backend.entity.Presupuesto;
 import com.drover.demo.backend.repository.PresupuestoRepository;
 import com.drover.demo.backend.entity.DetallePresupuestos;
+import com.drover.demo.backend.entity.DetalleVenta;
+import com.drover.demo.backend.entity.Venta;
+import com.drover.demo.backend.repository.VentaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -13,10 +16,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class PresupuestoService {
 
     private final PresupuestoRepository presupuestoRepository;
+    private final VentaRepository ventaRepository;
+    private final VentaService ventaService;
     private final List<String> estadosPermitido = List.of("confirmado", "cancelado", "pendiente");
 
-    public PresupuestoService(PresupuestoRepository presupuestoRepository) {
+    public PresupuestoService(PresupuestoRepository presupuestoRepository, VentaRepository ventaRepository,
+                              VentaService ventaService) {
         this.presupuestoRepository = presupuestoRepository;
+        this.ventaRepository = ventaRepository;
+        this.ventaService = ventaService;
     }
     
     @Transactional
@@ -115,6 +123,52 @@ public class PresupuestoService {
             
         presupuesto.setEstado(estadoLimpio);
         presupuestoRepository.save(presupuesto);
+    }
+
+    @Transactional
+    public Venta convertirConfirmadoAVenta(Long presupuestoId) {
+        if (presupuestoId == null) {
+            throw new IllegalArgumentException("El ID del presupuesto es obligatorio para convertir a venta.");
+        }
+
+        Presupuesto presupuesto = presupuestoRepository.findById(presupuestoId)
+            .orElseThrow(() -> new RuntimeException("Presupuesto no encontrado con el ID: " + presupuestoId));
+
+        if (!"confirmado".equals(presupuesto.getEstado())) {
+            throw new IllegalStateException("Solo un presupuesto confirmado puede convertirse a venta.");
+        }
+        if (ventaRepository.existsByPresupuestoId(presupuestoId)) {
+            throw new IllegalStateException("Este presupuesto ya fue convertido a venta.");
+        }
+
+        Venta venta = new Venta();
+        venta.setNroVenta("VTA-" + presupuesto.getNroPresupuesto());
+        venta.setCliente(presupuesto.getCliente());
+        venta.setRevendedor(presupuesto.getRevendedor());
+        venta.setResponsable(presupuesto.getResponsable());
+        venta.setFechaVenta(LocalDateTime.now());
+        venta.setEstadoVenta("confirmar");
+        venta.setEstadoPago("pendiente");
+        venta.setStockDescontado(false);
+        venta.setObservaciones(presupuesto.getObservaciones());
+        venta.setPresupuesto(presupuesto);
+
+        for (DetallePresupuestos detallePresupuesto : presupuesto.getDetalles()) {
+            DetalleVenta detalleVenta = new DetalleVenta();
+            detalleVenta.setProducto(detallePresupuesto.getProducto());
+            detalleVenta.setCantidad(detallePresupuesto.getCantidad());
+            detalleVenta.setAncho(detallePresupuesto.getAncho());
+            detalleVenta.setAlto(detallePresupuesto.getAlto());
+            detalleVenta.setCostoHistorico(detallePresupuesto.getCostoUnitarioHistorico());
+            detalleVenta.setMontoGananciaHistorico(detallePresupuesto.getMontoGananciaUnitario());
+            detalleVenta.setMontoComisionHistorico(BigDecimal.ZERO);
+            detalleVenta.setPrecioUnitarioHistorico(detallePresupuesto.getPrecioUnitario());
+            detalleVenta.setSubtotal(detallePresupuesto.getSubtotal());
+            detalleVenta.setVenta(venta);
+            venta.getDetalles().add(detalleVenta);
+        }
+
+        return ventaService.guardar(venta);
     }
     
     // --- MÉTODOS PRIVADOS ---

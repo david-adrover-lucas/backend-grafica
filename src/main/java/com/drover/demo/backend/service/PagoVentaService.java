@@ -2,6 +2,7 @@ package com.drover.demo.backend.service;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
+import com.drover.demo.backend.entity.MovimientoCaja;
 import com.drover.demo.backend.entity.PagoVenta;
 import com.drover.demo.backend.repository.PagoVentaRepository;
 import com.drover.demo.backend.entity.Venta;
@@ -16,14 +17,14 @@ public class PagoVentaService {
 
     private final PagoVentaRepository pagoVentaRepository;
     private final VentaRepository ventaRepository;
-    private final VentaService ventasService; 
+    private final MovimientoCajaService movimientoCajaService;
 
     public PagoVentaService(PagoVentaRepository pagoVentaRepository, 
                             VentaRepository ventaRepository, 
-                            VentaService ventasService) {
+                            MovimientoCajaService movimientoCajaService) {
         this.pagoVentaRepository = pagoVentaRepository;
         this.ventaRepository = ventaRepository;
-        this.ventasService = ventasService;
+        this.movimientoCajaService = movimientoCajaService;
     }
     
     @Transactional
@@ -54,10 +55,9 @@ public class PagoVentaService {
             ventaBd.setEstadoPago("señeado");
         }
 
-        // 4. Persistimos el pago de forma física en SQL
         PagoVenta pagoGuardado = pagoVentaRepository.save(pagoLimpio);
+        registrarIngresoCajaPorPago(pagoGuardado, ventaBd);
 
-        // Actualizamos el estado de la venta madre
         ventaRepository.save(ventaBd);
         
         return pagoGuardado;
@@ -69,17 +69,10 @@ public class PagoVentaService {
             throw new IllegalArgumentException("El ID del pago es requerido para editar.");
         }
 
-        PagoVenta pagoExistente = pagoVentaRepository.findById(id)
+        pagoVentaRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Registro de pago no encontrado con el ID: " + id));
 
-        PagoVenta datosNuevos = validarPagoVenta(pVenta);
-
-        pagoExistente.setMonto(datosNuevos.getMonto());
-        pagoExistente.setMedioPago(datosNuevos.getMedioPago());
-        pagoExistente.setObservaciones(datosNuevos.getObservaciones());
-        pagoExistente.setFecha(datosNuevos.getFecha());
-
-        return pagoVentaRepository.save(pagoExistente);
+        throw new IllegalStateException("Un pago de venta no puede editarse porque ya afecta el saldo de una cuenta. Registre un ajuste de caja si necesita corregirlo.");
     }
 
     public List<PagoVenta> listar() {
@@ -128,6 +121,10 @@ public class PagoVentaService {
             throw new IllegalArgumentException("El pago debe estar obligatoriamente vinculado a un comprobante de venta válido.");
         }
 
+        if (pago.getCuenta() == null || pago.getCuenta().getId() == null) {
+            throw new IllegalArgumentException("El pago debe indicar la cuenta donde ingreso el dinero.");
+        }
+
         if (pago.getMonto() == null || pago.getMonto().compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("El monto a entregar es obligatorio y debe ser estrictamente mayor a 0.");
         }
@@ -143,5 +140,19 @@ public class PagoVentaService {
         }
 
         return pago;
+    }
+
+    private void registrarIngresoCajaPorPago(PagoVenta pago, Venta venta) {
+        MovimientoCaja movimiento = new MovimientoCaja();
+        movimiento.setCuenta(pago.getCuenta());
+        movimiento.setVenta(venta);
+        movimiento.setPagoVenta(pago);
+        movimiento.setTipo("ingreso");
+        movimiento.setConcepto("pago_venta");
+        movimiento.setMonto(pago.getMonto());
+        movimiento.setFecha(pago.getFecha());
+        movimiento.setObservaciones("Ingreso por pago de venta " + venta.getNroVenta());
+
+        movimientoCajaService.registrar(movimiento);
     }
 }

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.drover.demo.backend.entity.Presupuesto;
+import com.drover.demo.backend.entity.Venta;
 import com.drover.demo.backend.service.PresupuestoService;
 
 import jakarta.validation.Valid;
@@ -73,5 +74,10 @@ public class PresupuestoController {
     public ResponseEntity<Void> cambiarEstado(@PathVariable Long id, @RequestParam String estado) {
         presupuestoService.cambiarEstado(id, estado);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/convertir-a-venta")
+    public ResponseEntity<Venta> convertirConfirmadoAVenta(@PathVariable Long id) {
+        return ResponseEntity.status(201).body(presupuestoService.convertirConfirmadoAVenta(id));
     }
 }

@@ -4,11 +4,12 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import com.drover.demo.backend.entity.Venta;
 import com.drover.demo.backend.repository.InsumoRepository;
-import com.drover.demo.backend.repository.ProductoInsumoRepository;
+import com.drover.demo.backend.repository.MovimientoStockRepository;
 import com.drover.demo.backend.repository.ProductoRepository;
 import com.drover.demo.backend.repository.VentaRepository;
 import com.drover.demo.backend.entity.DetalleVenta;
 import com.drover.demo.backend.entity.Insumo;
+import com.drover.demo.backend.entity.MovimientoStock;
 import com.drover.demo.backend.entity.Producto;
 import com.drover.demo.backend.entity.ProductoInsumo;
 
@@ -20,15 +21,17 @@ public class VentaService {
 
     private final VentaRepository ventaRepository;
     private final ProductoRepository productoRepository;
-    private final  InsumoRepository insumoRepository;
-    private final List<String> estadosVenta = List.of("diseñar", "confirmar", "retirar", "entrega", "entregado", "posponer");
+    private final InsumoRepository insumoRepository;
+    private final MovimientoStockRepository movimientoStockRepository;
+    private final List<String> estadosVenta = List.of("diseñar", "confirmar", "retirar a tercerizado", "entrega", "entregado", "posponer");
     private final List<String> pagosEstados = List.of("pendiente", "señeado", "pagado", "deuda");
  
     public VentaService(VentaRepository ventaRepository, ProductoRepository productoRepository,
-            InsumoRepository insumoRepository) {
+            InsumoRepository insumoRepository, MovimientoStockRepository movimientoStockRepository) {
         this.ventaRepository = ventaRepository;
         this.productoRepository = productoRepository;
         this.insumoRepository = insumoRepository;
+        this.movimientoStockRepository = movimientoStockRepository;
     }
 
 
@@ -38,14 +41,6 @@ public class VentaService {
         
         if (ventaLimpia.getNroVenta() == null || ventaLimpia.getNroVenta().strip().isEmpty()) {
             ventaLimpia.setNroVenta("VTA-" + System.currentTimeMillis());
-        }
-
-        // 🌟 REGLA SOLICITADA: Evaluamos la situación de la caja antes de tocar el depósito
-        String estadoPago = ventaLimpia.getEstadoPago().strip().toLowerCase();
-        
-        if ("señeado".equals(estadoPago) || "pagado".equals(estadoPago)) {
-            // Si el cliente dejó dinero, congelamos los materiales y descontamos stock
-            descontarStockDeLaVenta(ventaLimpia.getDetalles());
         }
 
         return ventaRepository.save(ventaLimpia);
@@ -59,6 +54,8 @@ public class VentaService {
 
         Venta ventaExistente = ventaRepository.findById(venta.getId())
             .orElseThrow(() -> new RuntimeException("Comprobante de venta no encontrado con el ID: " + venta.getId()));
+
+        validarVentaEditable(ventaExistente);
 
         Venta datosNuevosLimpios = validarVenta(venta);
 
@@ -131,6 +128,26 @@ public class VentaService {
         return ventaRepository.findByRevendedorId(revendedorId);
     }
 
+    @Transactional
+    public Venta cambiarEstado(Long id, String nuevoEstado) {
+        if (id == null) {
+            throw new IllegalArgumentException("El ID de la venta es obligatorio para cambiar el estado.");
+        }
+
+        String estadoLimpio = validarEstadoVenta(nuevoEstado);
+
+        Venta venta = ventaRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Comprobante de venta no encontrado con el ID: " + id));
+
+        if ("entrega".equals(estadoLimpio) && !Boolean.TRUE.equals(venta.getStockDescontado())) {
+            descontarStockDeLaVenta(venta);
+            venta.setStockDescontado(true);
+        }
+
+        venta.setEstadoVenta(estadoLimpio);
+        return ventaRepository.save(venta);
+    }
+
 
     // --- MÉTODOS PRIVADOS ---
 
@@ -158,14 +175,15 @@ public class VentaService {
             venta.setFechaVenta(LocalDateTime.now()); // Registramos el momento de la caja actual por defecto
         }
 
+        if (venta.getStockDescontado() == null) {
+            venta.setStockDescontado(false);
+        }
+
         // Validamos y normalizamos el estado del taller (Producción)
         if (venta.getEstadoVenta() == null || venta.getEstadoVenta().strip().isEmpty()) {
             venta.setEstadoVenta("confirmar"); // Estado inicial natural por defecto
         } else {
-            venta.setEstadoVenta(venta.getEstadoVenta().strip().toLowerCase());
-            if (!estadosVenta.contains(venta.getEstadoVenta())) {
-                throw new IllegalArgumentException("Estado de taller '" + venta.getEstadoVenta() + "' no permitido. Use: " + estadosVenta);
-            }
+            venta.setEstadoVenta(validarEstadoVenta(venta.getEstadoVenta()));
         }
 
         // Validamos y normalizamos la situación de caja
@@ -214,42 +232,101 @@ public class VentaService {
         }
         return acumulador;
     }
+
+    private String validarEstadoVenta(String estado) {
+        if (estado == null || estado.strip().isEmpty()) {
+            throw new IllegalArgumentException("El estado de venta es obligatorio.");
+        }
+
+        String estadoLimpio = estado.strip().toLowerCase();
+        if (!estadosVenta.contains(estadoLimpio)) {
+            throw new IllegalArgumentException("Estado de taller '" + estadoLimpio + "' no permitido. Use: " + estadosVenta);
+        }
+
+        return estadoLimpio;
+    }
+
+    private void validarVentaEditable(Venta venta) {
+        if (Boolean.TRUE.equals(venta.getStockDescontado())) {
+            throw new IllegalStateException("La venta ya desconto stock y no puede editarse desde la edicion normal.");
+        }
+
+        String estadoPago = venta.getEstadoPago() != null ? venta.getEstadoPago().strip().toLowerCase() : "";
+        if ("señeado".equals(estadoPago) || "pagado".equals(estadoPago)) {
+            throw new IllegalStateException("La venta ya tiene pagos registrados y no puede editarse.");
+        }
+    }
+
     // --- MOTOR DE STOCK EN VENTAS (MÉTODO PRIVADO AUXILIAR) ---
 
-    private void descontarStockDeLaVenta(List<DetalleVenta> detalles) {
-        for (DetalleVenta detalle : detalles) {
-            // Buscamos el producto con su receta completa cargada desde la BD
+    private void descontarStockDeLaVenta(Venta venta) {
+        for (DetalleVenta detalle : venta.getDetalles()) {
             Producto productoReal = productoRepository.findById(detalle.getProducto().getId())
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado para descontar stock."));
 
             String unidadVenta = productoReal.getUnidadVenta().strip().toLowerCase();
-            
-            // Calculamos el multiplicador industrial (Superficie si es m2, cantidad plana si no)
-            BigDecimal factorEscalaTotal = "m2".equals(unidadVenta) 
-                ? detalle.getCantidad().multiply(detalle.getAncho().multiply(detalle.getAlto()))
-                : detalle.getCantidad();
+            BigDecimal factorEscalaTotal = calcularFactorConsumo(detalle, unidadVenta);
 
-            // Recorremos la receta de insumos del artículo
             for (ProductoInsumo recetaComponente : productoReal.getInsumosComponentes()) {
-                Insumo insumoDeposito = recetaComponente.getInsumo();
-                
-                // Cantidad exacta de material consumido para este trabajo
+                Insumo insumoDeposito = insumoRepository.findById(recetaComponente.getInsumo().getId())
+                    .orElseThrow(() -> new RuntimeException("Insumo no encontrado para descontar stock: "
+                        + recetaComponente.getInsumo().getId()));
+
                 BigDecimal cantidadAConsumir = recetaComponente.getCantidad().multiply(factorEscalaTotal);
-                
-                // Restamos existencias
-                BigDecimal nuevoStock = insumoDeposito.getStockActual().subtract(cantidadAConsumir);
-                
-                // Freno de mano de seguridad: si no alcanzan los materiales, cancelamos la operación
-                if (nuevoStock.compareTo(BigDecimal.ZERO) < 0) {
-                    throw new RuntimeException("No hay suficiente stock en el depósito del insumo '" 
-                        + insumoDeposito.getNombre() + "' para confirmar este trabajo. Stock actual: " 
-                        + insumoDeposito.getStockActual() + ". Requerido: " + cantidadAConsumir);
+                BigDecimal stockAnterior = insumoDeposito.getStockActual();
+                BigDecimal stockPosterior = stockAnterior.subtract(cantidadAConsumir);
+
+                if (stockPosterior.compareTo(BigDecimal.ZERO) < 0) {
+                    throw new RuntimeException("No hay suficiente stock en el depósito del insumo '"
+                        + insumoDeposito.getNombre() + "' para confirmar este trabajo. Stock actual: "
+                        + stockAnterior + ". Requerido: " + cantidadAConsumir);
                 }
 
-                insumoDeposito.setStockActual(nuevoStock);
-                insumoRepository.save(insumoDeposito); // Guardamos el inventario actualizado
+                insumoDeposito.setStockActual(stockPosterior);
+                insumoRepository.save(insumoDeposito);
+
+                movimientoStockRepository.save(crearMovimientoSalidaVenta(
+                    insumoDeposito,
+                    venta,
+                    detalle,
+                    cantidadAConsumir,
+                    insumoDeposito.getCostoUnitario(),
+                    stockAnterior,
+                    stockPosterior,
+                    "Salida automatica por venta " + venta.getNroVenta()
+                ));
             }
         }
-    }    
-}
+    }
 
+    private BigDecimal calcularFactorConsumo(DetalleVenta detalle, String unidadVenta) {
+        if ("m2".equals(unidadVenta)) {
+            if (detalle.getAncho() == null || detalle.getAlto() == null ||
+                detalle.getAncho().compareTo(BigDecimal.ZERO) <= 0 ||
+                detalle.getAlto().compareTo(BigDecimal.ZERO) <= 0) {
+                throw new IllegalArgumentException("Para descontar stock de productos por m2, ancho y alto son obligatorios y mayores a cero.");
+            }
+            return detalle.getCantidad().multiply(detalle.getAncho().multiply(detalle.getAlto()));
+        }
+        return detalle.getCantidad();
+    }
+
+    private MovimientoStock crearMovimientoSalidaVenta(Insumo insumo, Venta venta, DetalleVenta detalle,
+                                                       BigDecimal cantidad, BigDecimal costoUnitario,
+                                                       BigDecimal stockAnterior, BigDecimal stockPosterior,
+                                                       String observaciones) {
+        MovimientoStock movimiento = new MovimientoStock();
+        movimiento.setInsumo(insumo);
+        movimiento.setVenta(venta);
+        movimiento.setDetalleVenta(detalle);
+        movimiento.setTipo("salida_venta");
+        movimiento.setCantidad(cantidad);
+        movimiento.setCostoUnitario(costoUnitario);
+        movimiento.setCostoTotal(cantidad.multiply(costoUnitario));
+        movimiento.setStockAnterior(stockAnterior);
+        movimiento.setStockPosterior(stockPosterior);
+        movimiento.setFecha(LocalDateTime.now());
+        movimiento.setObservaciones(observaciones);
+        return movimiento;
+    }
+}

@@ -27,6 +27,10 @@ public class PagoVenta {
     @JsonIgnore // Evita bucles infinitos en Postman al serializar la venta y sus pagos
     private Venta venta;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "cuenta_id", nullable = false)
+    private Cuenta cuenta;
+
     @Column(name = "fecha", nullable = false)
     private LocalDateTime fecha;
 
@@ -37,6 +41,18 @@ public class PagoVenta {
     @Column(name = "medio_pago", nullable = false, length = 50)
     private String medioPago; // Cambiado a camelCase (Ej: "efectivo", "transferencia", "tarjeta")
 
+    @Column(name = "proveedor_pago", length = 50)
+    private String proveedorPago;
+
+    @Column(name = "id_pago_externo", length = 100, unique = true)
+    private String idPagoExterno;
+
+    @Column(name = "referencia_externa", length = 150)
+    private String referenciaExterna;
+
+    @Column(name = "estado_externo", length = 50)
+    private String estadoExterno;
+
     @Column(name = "observaciones", columnDefinition = "TEXT")
     private String observaciones;
 
@@ -44,9 +60,10 @@ public class PagoVenta {
     public PagoVenta() {}
 
     // Constructor completo actualizado con objetos
-    public PagoVenta(Long id, Venta venta, LocalDateTime fecha, BigDecimal monto, String medioPago, String observaciones) {
+    public PagoVenta(Long id, Venta venta, Cuenta cuenta, LocalDateTime fecha, BigDecimal monto, String medioPago, String observaciones) {
         this.id = id;
         this.venta = venta;
+        this.cuenta = cuenta;
         this.fecha = fecha;
         this.monto = monto;
         this.medioPago = medioPago;
@@ -60,6 +77,9 @@ public class PagoVenta {
     public Venta getVenta() { return venta; }
     public void setVenta(Venta venta) { this.venta = venta; }
 
+    public Cuenta getCuenta() { return cuenta; }
+    public void setCuenta(Cuenta cuenta) { this.cuenta = cuenta; }
+
     public LocalDateTime getFecha() { return fecha; }
     public void setFecha(LocalDateTime fecha) { this.fecha = fecha; }
 
@@ -68,6 +88,18 @@ public class PagoVenta {
 
     public String getMedioPago() { return medioPago; }
     public void setMedioPago(String medioPago) { this.medioPago = medioPago; }
+
+    public String getProveedorPago() { return proveedorPago; }
+    public void setProveedorPago(String proveedorPago) { this.proveedorPago = proveedorPago; }
+
+    public String getIdPagoExterno() { return idPagoExterno; }
+    public void setIdPagoExterno(String idPagoExterno) { this.idPagoExterno = idPagoExterno; }
+
+    public String getReferenciaExterna() { return referenciaExterna; }
+    public void setReferenciaExterna(String referenciaExterna) { this.referenciaExterna = referenciaExterna; }
+
+    public String getEstadoExterno() { return estadoExterno; }
+    public void setEstadoExterno(String estadoExterno) { this.estadoExterno = estadoExterno; }
 
     public String getObservaciones() { return observaciones; }
     public void setObservaciones(String observaciones) { this.observaciones = observaciones; }

@@ -19,5 +19,9 @@ public interface VentaRepository extends JpaRepository<Venta, Long> {
 
     List<Venta> findByFechaVentaBetween(LocalDateTime desde, LocalDateTime hasta);
 
+    List<Venta> findByResponsableIdAndEstadoVentaAndFechaVentaBetween(Long responsableId, String estadoVenta, LocalDateTime desde, LocalDateTime hasta);
+
     boolean existsByNroVenta(String nroVenta);
+
+    boolean existsByPresupuestoId(Long presupuestoId);
 }

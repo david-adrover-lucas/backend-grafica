@@ -8,7 +8,11 @@ import org.springframework.stereotype.Service;
 
 import com.drover.demo.backend.entity.Compra;
 import com.drover.demo.backend.entity.DetalleCompra;
+import com.drover.demo.backend.entity.Insumo;
+import com.drover.demo.backend.entity.MovimientoStock;
 import com.drover.demo.backend.repository.CompraRepository;
+import com.drover.demo.backend.repository.InsumoRepository;
+import com.drover.demo.backend.repository.MovimientoStockRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -17,16 +21,21 @@ import jakarta.transaction.Transactional;
 public class CompraService {
 
     private final CompraRepository compraRepository;
+    private final InsumoRepository insumoRepository;
+    private final MovimientoStockRepository movimientoStockRepository;
 
-    public CompraService(CompraRepository compraRepository) {
+    public CompraService(CompraRepository compraRepository, InsumoRepository insumoRepository,
+                         MovimientoStockRepository movimientoStockRepository) {
         this.compraRepository = compraRepository;
+        this.insumoRepository = insumoRepository;
+        this.movimientoStockRepository = movimientoStockRepository;
     }
 
     @Transactional
     public void guardar(Compra compra) {
         Compra compraLimpia = validarCompra(compra);
-        
-        compraRepository.save(compraLimpia);
+        Compra compraGuardada = compraRepository.saveAndFlush(compraLimpia);
+        registrarEntradaStockPorCompra(compraGuardada);
     }
     
     @Transactional
@@ -37,7 +46,9 @@ public class CompraService {
         
         Compra compraExistente = compraRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("ID de compra no encontrado: " + id));
-            
+
+        revertirStockCompra(compraExistente);
+
         Compra compraLimpia = validarCompra(compra);
         
         compraExistente.setNumeroCompra(compraLimpia.getNumeroCompra());
@@ -53,7 +64,8 @@ public class CompraService {
         }
 
         
-        compraRepository.save(compraExistente);
+        Compra compraGuardada = compraRepository.saveAndFlush(compraExistente);
+        registrarEntradaStockPorCompra(compraGuardada);
     }
 
     public List<Compra> listar() {
@@ -125,6 +137,75 @@ public class CompraService {
         return compra;
     }
 
+    private void registrarEntradaStockPorCompra(Compra compra) {
+        for (DetalleCompra detalle : compra.getDetalles()) {
+            Insumo insumo = insumoRepository.findById(detalle.getInsumo().getId())
+                .orElseThrow(() -> new RuntimeException("Insumo no encontrado para actualizar stock: " + detalle.getInsumo().getId()));
+
+            BigDecimal stockAnterior = insumo.getStockActual();
+            BigDecimal stockPosterior = stockAnterior.add(detalle.getCantidad());
+
+            insumo.setStockActual(stockPosterior);
+            insumo.setCostoUnitario(detalle.getPrecioUnitario());
+            insumoRepository.save(insumo);
+
+            movimientoStockRepository.save(crearMovimientoStock(
+                insumo,
+                compra,
+                "entrada_compra",
+                detalle.getCantidad(),
+                detalle.getPrecioUnitario(),
+                stockAnterior,
+                stockPosterior,
+                "Entrada automatica por compra " + compra.getNumeroCompra()
+            ));
+        }
+    }
+
+    private void revertirStockCompra(Compra compra) {
+        for (DetalleCompra detalle : compra.getDetalles()) {
+            Insumo insumo = insumoRepository.findById(detalle.getInsumo().getId())
+                .orElseThrow(() -> new RuntimeException("Insumo no encontrado para revertir stock: " + detalle.getInsumo().getId()));
+
+            BigDecimal stockAnterior = insumo.getStockActual();
+            BigDecimal stockPosterior = stockAnterior.subtract(detalle.getCantidad());
+
+            if (stockPosterior.compareTo(BigDecimal.ZERO) < 0) {
+                throw new IllegalStateException("No se puede editar la compra porque el insumo '" + insumo.getNombre()
+                    + "' ya fue consumido y revertirla dejaria stock negativo.");
+            }
+
+            insumo.setStockActual(stockPosterior);
+            insumoRepository.save(insumo);
+
+            movimientoStockRepository.save(crearMovimientoStock(
+                insumo,
+                compra,
+                "ajuste_manual",
+                detalle.getCantidad(),
+                detalle.getPrecioUnitario(),
+                stockAnterior,
+                stockPosterior,
+                "Reversion automatica por edicion de compra " + compra.getNumeroCompra()
+            ));
+        }
+    }
+
+    private MovimientoStock crearMovimientoStock(Insumo insumo, Compra compra, String tipo, BigDecimal cantidad,
+                                                 BigDecimal costoUnitario, BigDecimal stockAnterior,
+                                                 BigDecimal stockPosterior, String observaciones) {
+        MovimientoStock movimiento = new MovimientoStock();
+        movimiento.setInsumo(insumo);
+        movimiento.setCompra(compra);
+        movimiento.setTipo(tipo);
+        movimiento.setCantidad(cantidad);
+        movimiento.setCostoUnitario(costoUnitario);
+        movimiento.setCostoTotal(cantidad.multiply(costoUnitario));
+        movimiento.setStockAnterior(stockAnterior);
+        movimiento.setStockPosterior(stockPosterior);
+        movimiento.setFecha(LocalDateTime.now());
+        movimiento.setObservaciones(observaciones);
+        return movimiento;
+    }
 
 }
-

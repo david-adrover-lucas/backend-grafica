@@ -61,6 +61,9 @@ public class TrabajoTercerizadoVenta {
     @Column(name = "fecha_finalizacion")    
     private LocalDateTime fechaFinalizacion;
 
+    @Column(name = "fecha_retiro")
+    private LocalDateTime fechaRetiro;
+
     // Constructor vacío obligatorio para JPA
     public TrabajoTercerizadoVenta() {}
 
@@ -115,4 +118,7 @@ public class TrabajoTercerizadoVenta {
 
     public LocalDateTime getFechaFinalizacion() { return fechaFinalizacion; }
     public void setFechaFinalizacion(LocalDateTime fechaFinalizacion) { this.fechaFinalizacion = fechaFinalizacion; }
+
+    public LocalDateTime getFechaRetiro() { return fechaRetiro; }
+    public void setFechaRetiro(LocalDateTime fechaRetiro) { this.fechaRetiro = fechaRetiro; }
 }

@@ -4,11 +4,13 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.drover.demo.backend.entity.TrabajoTercerizadoVenta;
@@ -51,5 +53,21 @@ public class TrabajoTercerizadoVentaController {
     @GetMapping("/proveedor/{proveedorId}")
     public List<TrabajoTercerizadoVenta> listarPorProveedor(@PathVariable Long proveedorId) {
         return trabajoTercerizadoVentaService.listarPorProveedor(proveedorId);
+    }
+
+    @GetMapping("/proveedor/{proveedorId}/estado/{estado}")
+    public List<TrabajoTercerizadoVenta> listarPorProveedorYEstado(@PathVariable Long proveedorId, @PathVariable String estado) {
+        return trabajoTercerizadoVentaService.listarPorProveedorYEstado(proveedorId, estado);
+    }
+
+    @PatchMapping("/{id}/estado")
+    public ResponseEntity<TrabajoTercerizadoVenta> cambiarEstado(@PathVariable Long id, @RequestParam String estado) {
+        return ResponseEntity.ok(trabajoTercerizadoVentaService.cambiarEstado(id, estado));
+    }
+
+    @PostMapping("/{id}/deuda")
+    public ResponseEntity<Void> generarDeudaProveedor(@PathVariable Long id) {
+        trabajoTercerizadoVentaService.generarDeudaProveedor(id);
+        return ResponseEntity.status(201).build();
     }
 }

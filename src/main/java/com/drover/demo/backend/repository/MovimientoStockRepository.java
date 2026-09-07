@@ -12,12 +12,14 @@ import com.drover.demo.backend.entity.MovimientoStock;
 @Repository
 public interface MovimientoStockRepository extends JpaRepository<MovimientoStock, Long> {
 
-    // 🌟 CORRECCIÓN: Agregado "OrderByFechaDesc" al final del nombre
+    List<MovimientoStock> findByInsumoId(Long insumoId);
+
     List<MovimientoStock> findByInsumoIdOrderByFechaDesc(Long insumoId);
 
     List<MovimientoStock> findByTipo(String tipo);
 
-    // 🌟 CORRECCIÓN: Agregado "OrderByFechaDesc" al final del nombre
+    List<MovimientoStock> findByFechaBetween(LocalDateTime desde, LocalDateTime hasta);
+
     List<MovimientoStock> findByFechaBetweenOrderByFechaDesc(LocalDateTime desde, LocalDateTime hasta);
 }
 

@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +48,14 @@ public class Venta {
 
     @Column(name = "estado_pago", nullable = false, length = 20)
     private String estadoPago; // Ej: "pago_parcial", "total", "deuda"
+
+    @Column(name = "stock_descontado")
+    private Boolean stockDescontado = false;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "presupuesto_id", unique = true)
+    @JsonIgnore
+    private Presupuesto presupuesto;
 
     // Mapeo contable exacto DECIMAL(14,2) según tu PDF
     @Column(name = "monto_total", nullable = false, precision = 14, scale = 2)
@@ -103,6 +112,12 @@ public class Venta {
 
     public String getEstadoPago() { return estadoPago; }
     public void setEstadoPago(String estadoPago) { this.estadoPago = estadoPago; }
+
+    public Boolean getStockDescontado() { return stockDescontado; }
+    public void setStockDescontado(Boolean stockDescontado) { this.stockDescontado = stockDescontado; }
+
+    public Presupuesto getPresupuesto() { return presupuesto; }
+    public void setPresupuesto(Presupuesto presupuesto) { this.presupuesto = presupuesto; }
 
     public BigDecimal getMontoTotal() { return montoTotal; }
     public void setMontoTotal(BigDecimal montoTotal) { this.montoTotal = montoTotal; }

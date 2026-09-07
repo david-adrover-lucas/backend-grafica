@@ -10,5 +10,5 @@ public interface TrabajoTercerizadoVentaRepository extends JpaRepository<Trabajo
     List<TrabajoTercerizadoVenta> findByVentaId(Long ventaId);
     List<TrabajoTercerizadoVenta> findByProveedorId(Long proveedorId);
     List<TrabajoTercerizadoVenta> findByEstado(String estado);
+    List<TrabajoTercerizadoVenta> findByProveedorIdAndEstado(Long proveedorId, String estado);
 }
-
